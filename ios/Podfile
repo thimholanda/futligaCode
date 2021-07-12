@@ -22,7 +22,8 @@ target 'futligaapp' do
   #   flipper_post_install(installer)
   # end
 
-  use_flipper!({ 'Flipper-Folly' => '2.3.0' })
+  # Comentar se for acima de XCode 12.4
+  # use_flipper!({ 'Flipper-Folly' => '2.3.0' })
   
 end
 
