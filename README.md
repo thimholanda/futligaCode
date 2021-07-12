@@ -11,6 +11,8 @@
 
     1. Executar comando
     
+        ```npx install-peerdeps --dev eslint-config-airbnb```
+        
         ````yarn install````
     
     2. Entrar na pasta ios e executar o comando
