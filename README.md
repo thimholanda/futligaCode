@@ -1,33 +1,24 @@
 # futligaCode
 
-# IOS (MacOs)
+## Instalar e Rodar APP = IOS
 
-- ### Antes de Instalar
+1. Entrar dentro da pasta ios e remover a pasta Posts e o Podfile.lock
 
-    1. Remover a pasta Posts
-    2. Remover o arquivo Podfile.lock
     
-- ### Instalar dependencias
-
-    1. Executar comando
+1 - Instalar dependencias
     
-        ```npx install-peerdeps --dev eslint-config-airbnb```
+```npx install-peerdeps --dev eslint-config-airbnb```
         
-        ````yarn install````
+````yarn install````
+
+```cd ios && pod install```
     
-    2. Entrar na pasta ios e executar o comando
-    
-        ```pod install```
-    
-**
-Obs.: Se Xcode é menor de 12.4, então, descomentar linha 26 no arquivo ios/Podfile
-**
+**Obs.: Se Xcode é menor de 12.4, então, descomentar linha 26 no arquivo ios/Podfile
 
-- ###  Compilar
+### 2 - Rodar aplicação
 
-    1. Executar Build pelo Xcode
+```npm run-script ios```
 
-- ### Executar
+** Obs.: Caso ocorrer erro de não encontrar as fontes, basta executar >
 
-    1. ````npm run-script ios```` 
-
+```react-native link```
