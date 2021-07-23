@@ -1,101 +1,368 @@
-import React from 'react';
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-import { View, Button, Image, StatusBar, Text } from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import Carousel from 'react-native-snap-carousel';
+import {getBottomSpace} from 'react-native-iphone-x-helper';
+import {Text, View, TouchableOpacity} from 'react-native';
 
-import { useAuth } from '../../hooks/auth';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { ImageBackgroundDashboard } from '../SignIn/styles';
-import imgBg from '../../assets/bg-db.png';
-import {LocaleConfig} from 'react-native-calendars';
+import {useAuth} from '../../hooks/auth';
 
-LocaleConfig.locales['fr'] = {
-  monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-  monthNamesShort: ['Jan.','Fev.','Mar.','Abr.','Mai.','Junh.','Jul..','Ago.','Set.','Out.','Nov.','Dez.'],
-  dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
-  dayNamesShort: ['Dom.','Seg.','Ter.','Qua.','Qui.','Sex.','Sáb.'],
-  today: 'Aujourd\'hui'
-};
+import MainContainer from '../../components/MainContainer';
+import RegularBackground from '../../components/RegularBackground';
+import {AdjustableImage} from '../../components/AdjustableImage';
+import {Row} from '../../components/Row';
+import MainView from '../../components/MainView';
+import {RegularBar} from '../../components/RegularBar';
+import RegularScroll from '../../components/RegularScroll';
 
+import {ButtonFeaturedBox} from '../../components/ButtonFeaturedBox';
+import {FeaturedBox} from '../../components/FeaturedBox';
+import {
+  Badge,
+  BadgeText,
+  ContainerAvatar,
+  ContainerCarousel,
+  ContainerScheduleGame,
+  ContainerScheduleGameAvatar,
+  ContainerScheduleGameSingle,
+  StyledPagination,
+  TextDistrict,
+  TextScheduleDate,
+  TextScheduleDivider,
+  TextSince,
+  TitleTeam,
+} from './styles';
+
+import iconSchedule from '../../assets/icon-schedule-game.png';
+import api from '../../services/api';
+import {Modalize} from 'react-native-modalize';
+import colors from '../../styles/colors';
+import fonts from '../../styles/fonts';
+
+import IconHome from '../../assets/icon-home.svg';
+import IconRoad from '../../assets/icon-road.svg';
+import {useNavigation} from '@react-navigation/native';
+
+interface IScheduleData {
+  dataJogo: string;
+  ano: String;
+  dia: String;
+  mes: String;
+  horaInicio: string;
+  mandante: {
+    id: string;
+    nomeApresentacao: string;
+    distintivo: string;
+  };
+  visitante: {
+    id: string;
+    nomeApresentacao: string;
+    distintivo: string;
+  };
+}
+
+interface ITeamInfo {
+  fundacao: string;
+  uf: string;
+  bairro: string;
+}
 
 const Dashboard: React.FC = () => {
-    LocaleConfig.defaultLocale = 'fr';
-    const {signOut} = useAuth();
+  const navigation = useNavigation();
+
+  const {loggedUser, urls} = useAuth();
+  const carouselRef = useRef<Carousel<IScheduleData>>(
+    {} as Carousel<IScheduleData>,
+  );
+  const modalizeRef = useRef<Modalize>(null);
+
+  const [schedule, setSchedule] = useState<IScheduleData[]>([]);
+  const [carouselWidth, setCarouselWidth] = useState(100);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [teamInfo, setTeamInfo] = useState<ITeamInfo>({} as ITeamInfo);
+  const [scheduleType, setScheduleType] = useState('');
+
+  const userName = useMemo(() => {
+    return loggedUser.nomeApresentacao.toUpperCase();
+  }, [loggedUser]);
+
+  const avatar = useMemo(() => {
     return (
-        <>
-        <View style={{flex: 1, paddingTop: 50}} >
-
-            <StatusBar hidden />
-            
-            <View style={{flexDirection: 'row', height: 50, backgroundColor: '#717e7f', paddingBottom: 10, marginTop: 0, marginBottom: 10}}>
-                
-                <TouchableOpacity
-                    onPress={signOut}
-                    style={{ flex: 1, justifyContent: 'center' }}
-                >   
-                    <Image style={{width: 30, height: 21, marginLeft: 20}} source={ require('../../../src/assets/voltar.png') } resizeMode="contain"/>
-                </TouchableOpacity>
-
-                <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
-                    <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text style={{color: 'white', fontFamily: 'Oswald-Light', fontSize: 28}}>MARCAR JOGO</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-end' }}>
-                    <Image style={{width: 27, height: 30, marginRight: 20}} source={ require('../../../src/assets/sino.png') } resizeMode="contain"/>
-                </View>
-
-            </View>         
-        
-            
-            <View style={{backgroundColor: 'white', flex: 1}}>
-                    
-                    <Calendar
-                        theme={{
-                            arrowColor: '#666',
-                        }}
-                        firstDay={1}
-                        style={{ width: '100%' }}
-                        markedDates={{
-                            '2021-03-23': {selected: true, marked: true, dotColor:'#d9534f' , selectedColor: '#f0ad4e' },
-                            '2021-03-25': {selected: true, marked: false, selectedColor: '#d9534f', disabled: true, disableTouchEvent: true},
-                            '2021-03-28': {disabled: true, disableTouchEvent: true},
-                            '2021-03-01': {selected: true, marked: true, selectedColor: '#00d67c', dotColor:'#d9534f'},
-                        }}
-                    />
-                    <View style={{ backgroundColor: 'white', flex: 1 }}>
-                        
-                        <ImageBackgroundDashboard source={imgBg}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}> 
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', margin: 20 }}>
-                                    <View style={{ width: 12, height: 12, backgroundColor: '#f0ad4e', marginRight: 5, borderRadius: 50}}></View>
-                                    <Text style={{fontFamily: 'Oswald-Regular', color: '#666', fontSize: 15}}>FERIADO</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', margin: 20 }}>
-                                    <View style={{ width: 12, height: 12, backgroundColor: '#d9534f', marginRight: 5, borderRadius: 50}}></View>
-                                    <Text style={{fontFamily: 'Oswald-Regular', color: '#666', fontSize: 15}}>FECHADO</Text>
-                                </View>
-
-                                <View style={{ flexDirection: 'row', alignItems: 'center', margin: 20 }}>
-                                    <View style={{ width: 12, height: 12, backgroundColor: '#5bc0de', marginRight: 5, borderRadius: 50}}></View>
-                                    <Text style={{fontFamily: 'Oswald-Regular', color: '#666', fontSize: 15}}>DATA FUTLIGA</Text>
-                                </View>
-                            </View>
-                        
-                        </ImageBackgroundDashboard>
-                        
-                    </View>
-                </View>
-
-
-
-            </View>
-            
-        </>
+      loggedUser.distintivo && `${urls.distintivos}${loggedUser.distintivo}`
     );
+  }, [loggedUser, urls]);
+
+  const handleScheduleGame = useCallback(() => {
+    setScheduleType('');
+    modalizeRef.current?.open();
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    modalizeRef.current?.close();
+  }, []);
+
+  const handleClosedModal = useCallback(() => {
+    if (scheduleType !== '') {
+      navigation.navigate('ScheduleGame');
+    }
+  }, [navigation, scheduleType]);
+
+  const handleScheduleGameType = useCallback((type: string) => {
+    setScheduleType(type);
+  }, []);
+
+  useEffect(() => {
+    api.get(`Equipes/${loggedUser.id}/Agenda/Listar`).then(response =>
+      setSchedule(
+        response.data.agenda.map((item: IScheduleData) => {
+          item.ano = item.dataJogo.slice(0, 4);
+          item.mes = item.dataJogo.slice(4, 6);
+          item.dia = item.dataJogo.slice(6, 8);
+          return item;
+        }),
+      ),
+    );
+  }, [loggedUser.id]);
+
+  useEffect(() => {
+    if (scheduleType !== '') {
+      modalizeRef.current?.close();
+    }
+  }, [scheduleType]);
+
+  useEffect(() => {
+    api.get(`Equipes/${loggedUser.id}`).then(response => {
+      setTeamInfo(response.data);
+    });
+  }, [loggedUser.id]);
+
+  const since = useMemo(() => {
+    if (teamInfo.fundacao) {
+      const sinceFormated = teamInfo.fundacao.substring(0, 4);
+      sinceFormated.slice(0, 1);
+      return `${sinceFormated}`;
+    }
+  }, [teamInfo.fundacao]);
+
+  return (
+    <>
+      <MainView>
+        <RegularBar title={userName} />
+
+        <MainContainer>
+          <RegularBackground />
+          <RegularScroll>
+            <Row>
+              <ButtonFeaturedBox
+                aspectRatio={0.8}
+                isHalf
+                marginTo="right"
+                title="MEU TIME"
+                onPress={() => {}}>
+                <ContainerAvatar>
+                  <AdjustableImage size="72%" isUri={true} image={avatar} />
+                  <View>
+                    <TextSince>Desde {since}</TextSince>
+                    <TextDistrict>
+                      {teamInfo.bairro} | {teamInfo.uf}
+                    </TextDistrict>
+                  </View>
+                </ContainerAvatar>
+              </ButtonFeaturedBox>
+              <ButtonFeaturedBox
+                aspectRatio={0.8}
+                isHalf
+                marginTo="left"
+                title="MARCAR JOGO"
+                onPress={handleScheduleGame}>
+                <AdjustableImage size="80%" image={iconSchedule} />
+              </ButtonFeaturedBox>
+            </Row>
+            <Row marginType="middle">
+              <FeaturedBox aspectRatio={1.35} title="PRÓXIMOS JOGOS">
+                <ContainerCarousel
+                  onLayout={event => {
+                    setCarouselWidth(event.nativeEvent.layout.width);
+                  }}>
+                  <Carousel
+                    layout={'default'}
+                    data={schedule}
+                    sliderWidth={carouselWidth}
+                    keyExtractor={(_, index) => String(index)}
+                    renderItem={({item}: {item: IScheduleData}) => (
+                      <>
+                        <ContainerScheduleGame>
+                          <ContainerScheduleGameSingle>
+                            <TouchableOpacity>
+                              <TitleTeam>
+                                {item.mandante.nomeApresentacao.toUpperCase()}
+                              </TitleTeam>
+                              <Badge>
+                                <BadgeText>Mandante</BadgeText>
+                              </Badge>
+                              <ContainerScheduleGameAvatar>
+                                <AdjustableImage
+                                  size="80%"
+                                  isUri
+                                  image={
+                                    item.mandante.distintivo &&
+                                    `${urls.distintivos}${item.mandante.distintivo}`
+                                  }
+                                />
+                              </ContainerScheduleGameAvatar>
+                            </TouchableOpacity>
+                          </ContainerScheduleGameSingle>
+
+                          <View>
+                            <TextScheduleDate>
+                              {`${item.dia}/${item.mes}/${item.ano}`}
+                              {'\n'}
+                              {item.horaInicio}
+                            </TextScheduleDate>
+                            <TextScheduleDivider>X</TextScheduleDivider>
+                          </View>
+
+                          <ContainerScheduleGameSingle>
+                            <TouchableOpacity>
+                              <TitleTeam>
+                                {item.visitante.nomeApresentacao.toUpperCase()}
+                              </TitleTeam>
+                              <Badge>
+                                <BadgeText>Visitante</BadgeText>
+                              </Badge>
+                              <ContainerScheduleGameAvatar>
+                                <AdjustableImage
+                                  isUri
+                                  size="80%"
+                                  image={
+                                    item.visitante.distintivo &&
+                                    `${urls.distintivos}${item.visitante.distintivo}`
+                                  }
+                                />
+                              </ContainerScheduleGameAvatar>
+                            </TouchableOpacity>
+                          </ContainerScheduleGameSingle>
+                        </ContainerScheduleGame>
+                      </>
+                    )}
+                    itemWidth={carouselWidth}
+                    ref={carouselRef}
+                    onSnapToItem={index => setActiveSlide(index)}
+                  />
+                  <StyledPagination
+                    dotsLength={schedule.length}
+                    activeDotIndex={activeSlide}
+                    carouselRef={carouselRef.current}
+                    inactiveDotOpacity={0.4}
+                    inactiveDotScale={0.6}
+                  />
+                </ContainerCarousel>
+              </FeaturedBox>
+            </Row>
+          </RegularScroll>
+        </MainContainer>
+      </MainView>
+      <Modalize
+        onClosed={handleClosedModal}
+        modalStyle={{overflow: 'hidden'}}
+        withHandle={false}
+        adjustToContentHeight={true}
+        HeaderComponent={
+          <View>
+            <Text
+              style={{
+                fontFamily: fonts.regular,
+                color: colors.dark_gray,
+                textAlign: 'center',
+                fontSize: 16,
+                // backgroundColor: colors.bright_gray,
+                paddingTop: 14,
+              }}>
+              Marcar jogo como
+            </Text>
+          </View>
+        }
+        ref={modalizeRef}>
+        <View style={{flex: 1, paddingHorizontal: 12, paddingVertical: 12}}>
+          <Row
+            style={{
+              alignItems: 'center',
+              justifyContent: 'space-around',
+              paddingVertical: 20,
+            }}>
+            <View>
+              <TouchableOpacity
+                onPress={() => handleScheduleGameType('mandante')}
+                style={{
+                  width: 60,
+                  height: 60,
+                  backgroundColor: colors.bright_gray,
+                  borderRadius: 30,
+                  marginBottom: 5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <IconHome width={35} height={35} />
+              </TouchableOpacity>
+              <Text
+                style={{
+                  fontFamily: fonts.regular,
+                  color: colors.gray,
+                  textAlign: 'center',
+                  fontSize: 14,
+                }}>
+                Mandante
+              </Text>
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={() => handleScheduleGameType('visitante')}
+                style={{
+                  width: 60,
+                  height: 60,
+                  backgroundColor: colors.bright_gray,
+                  borderRadius: 30,
+                  marginBottom: 5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <IconRoad width={35} height={35} />
+              </TouchableOpacity>
+              <Text
+                style={{
+                  fontFamily: fonts.regular,
+                  color: colors.gray,
+                  textAlign: 'center',
+                  fontSize: 14,
+                }}>
+                Visitante
+              </Text>
+            </View>
+          </Row>
+        </View>
+        <View
+          style={{
+            width: '100%',
+            backgroundColor: colors.bright_gray,
+            paddingVertical: 14,
+            paddingBottom: getBottomSpace() + 16,
+            borderStyle: 'solid',
+            borderTopWidth: 1,
+            borderTopColor: colors.border_gray,
+          }}>
+          <TouchableOpacity onPress={handleCloseModal}>
+            <Text
+              style={{
+                fontFamily: fonts.regular,
+                fontSize: 16,
+                color: colors.dark_gray,
+                textAlign: 'center',
+              }}>
+              Cancelar
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modalize>
+    </>
+  );
 };
 
 export default Dashboard;

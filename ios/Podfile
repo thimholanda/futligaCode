@@ -3,12 +3,18 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '10.0'
 
-target 'futligaapp' do
+target 'appfutliga' do
   config = use_native_modules!
 
-  use_react_native!(:path => config["reactNativePath"])
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # to enable hermes on iOS, change `false` to `true` and then install pods
+    :hermes_enabled => false
+  )
 
-  target 'futligaappTests' do
+
+
+  target 'appfutligaTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -16,22 +22,11 @@ target 'futligaapp' do
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
-  # you should disable these next few lines.
-  # use_flipper!
-  # post_install do |installer|
-  #   flipper_post_install(installer)
-  # end
+  # you should disable the next line.
+  use_flipper!()
 
-  # Comentar se for acima de XCode 12.4
-  # use_flipper!({ 'Flipper-Folly' => '2.3.0' })
-  
-end
-
-target 'futligaapp-tvOS' do
-  # Pods for futligaapp-tvOS
-
-  target 'futligaapp-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
+  post_install do |installer|
+    react_native_post_install(installer)
   end
+
 end

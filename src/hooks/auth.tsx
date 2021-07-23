@@ -1,105 +1,182 @@
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
+import jwt_decode from 'jwt-decode';
 import api from '../services/api';
-import { Alert } from 'react-native';
 
 interface SignInCredentials {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
+}
+
+export interface Equipe {
+  distintivo: string;
+  id: string;
+  nomeApresentacao: string;
+  nomeCompleto: string;
+  nomeConta: string;
+  situacaoCadastral: string;
+}
+
+interface User {
+  apelido: string;
+  email: string;
+  equipesQueAdministra: Array<Equipe>;
+  foto: string;
+  id: string;
+  isAdmin: boolean;
+  nomeCompleto: string;
+  tipo: string;
 }
 
 interface AuthContextData {
-    user: object;
-    loading: boolean;
-    signIn(credentials: SignInCredentials): Promise<void>;
-    signOut(): void;
-    token: string;
+  user: User;
+  loggedUser: Equipe;
+  loading: boolean;
+  signIn(credentials: SignInCredentials): Promise<void>;
+  signOut(): void;
+  token: string;
+  urls: Urls;
+}
+
+interface Urls {
+  distintivos: string;
+  fotos: string;
 }
 
 interface AuthState {
-    token: string;
-    user: object;
+  token: string;
+  user: User;
+  loggedUser: Equipe;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-export const AuthProvider: React.FC = ({ children }) => {
-    
-    const [data, setData] = useState<AuthState>({} as AuthState);
-    const [loading, setLoading] = useState(true);
+export const AuthProvider: React.FC = ({children}) => {
+  const [data, setData] = useState<AuthState>({} as AuthState);
+  const [loading, setLoading] = useState(true);
+  const [urls, setUrls] = useState<Urls>({} as Urls);
 
-    useEffect(()=>{
-        async function loadStorageData(): Promise<void>{
+  const getUrls = useCallback(async () => {
+    const response = await api.get('/Domain/GetUrls');
+    setUrls(response.data.urls);
+  }, []);
 
-            const [token, user] = await AsyncStorage.multiGet([
-                '@futLiga:token',
-                '@futLiga:user'
-            ]);
+  useEffect(() => {
+    async function loadStorageData(): Promise<void> {
+      const [token, user, loggedUser] = await AsyncStorage.multiGet([
+        '@futLiga:token',
+        '@futLiga:user',
+        '@futLiga:loggedUser',
+      ]);
 
-            if(token[1] && user[1]){
-                setData({token: token[1], user: JSON.parse(user[1])})
-            };
-        }
-
-        setLoading(false);
-
-        loadStorageData();
-    }, []);
-
-    const signIn = useCallback(async ({ email, password }) => {
-        
-        const response = await api.post('/Token/Request', {
-            email,
-            password,
+      if (token[1] && user[1] && loggedUser[1]) {
+        setData({
+          token: token[1],
+          user: JSON.parse(user[1]),
+          loggedUser: JSON.parse(loggedUser[1]),
         });
+      }
 
-        const { token } = response.data;
+      getUrls();
 
-        const user = {
-            id: '8557',
-            name: 'Usuario 8557',
-            nickname: 'Usuario 8557',
-            email: 'usuario8557@futliga.com.br',
-            avatar: 'http://teste.futliga.com.br/imagens/distintivos/8557-v01.png'
-        }
+      setLoading(false);
+    }
 
-        await AsyncStorage.multiSet([
-            ['@futLiga:token', token],
-            ['@futLiga:user', JSON.stringify(user)]
-        ]);
+    loadStorageData();
+  }, [getUrls, urls.fotos, urls.distintivos]);
 
-        //todo: remover verificação do token. Usar somente usuário no setData.
-        if(!!token){
-            setData({ token, user });
-        }else{
-            throw new Error();
-        }
+  const signIn = useCallback(async ({email, password}) => {
+    const response = await api.post('/Token/Request', {
+      email,
+      password,
+    });
 
-    }, []);
+    const {token} = response.data;
 
-    const signOut = useCallback(async () => {
-        await AsyncStorage.multiRemove(
-                [
-                    '@futLiga:token',
-                    '@futLiga:user'
+    const decodedToken: any = jwt_decode(token);
+    const payloadObject = JSON.parse(decodedToken.payload.replace(/'/g, '"'));
 
-                ]
-            );
-        
-        setData({} as AuthState);
-    }, []);
+    const {
+      Apelido,
+      Email,
+      EquipesQueAdministra,
+      Foto,
+      Id,
+      IsAdmin,
+      NomeCompleto,
+      Tipo,
+    } = payloadObject;
 
-    return (
-        <AuthContext.Provider value={{ user: data.user, signIn, signOut, loading, token: data.token }}>
-            {children}
-        </AuthContext.Provider>
-    );
+    const equipesArray: Array<any> = EquipesQueAdministra;
+
+    const equipes: Equipe[] = equipesArray.map(equipe => {
+      return {
+        distintivo: equipe.Distintivo,
+        id: equipe.Id,
+        nomeApresentacao: equipe.NomeApresentacao,
+        nomeCompleto: equipe.NomeCompleto,
+        nomeConta: equipe.NomeConta,
+        situacaoCadastral: equipe.SituacaoCadastral,
+      };
+    });
+
+    const loggedUser = equipes[0];
+
+    const user: User = {
+      apelido: Apelido,
+      email: Email,
+      equipesQueAdministra: equipes,
+      foto: Foto,
+      id: Id,
+      isAdmin: IsAdmin,
+      nomeCompleto: NomeCompleto,
+      tipo: Tipo,
+    };
+
+    await AsyncStorage.multiSet([
+      ['@futLiga:token', token],
+      ['@futLiga:user', JSON.stringify(user)],
+      ['@futLiga:loggedUser', JSON.stringify(loggedUser)],
+    ]);
+
+    api.defaults.headers.authorization = `Bearer ${token}`;
+
+    setData({token, user, loggedUser});
+  }, []);
+
+  const signOut = useCallback(async () => {
+    await AsyncStorage.multiRemove(['@futLiga:token', '@futLiga:user']);
+
+    setData({} as AuthState);
+    setUrls({} as Urls);
+  }, []);
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user: data.user,
+        loggedUser: data.loggedUser,
+        signIn,
+        signOut,
+        loading,
+        token: data.token,
+        urls,
+      }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export function useAuth(): AuthContextData {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used whitin an AuthProvider');
-    }
-    return context;
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used whitin an AuthProvider');
+  }
+  return context;
 }
