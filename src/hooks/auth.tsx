@@ -7,7 +7,8 @@ import React, {
 } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import jwt_decode from 'jwt-decode';
-import api from '../services/api';
+import {Authorization} from '../services/api';
+import {DomainService, TokenService} from '../services';
 
 interface SignInCredentials {
   email: string;
@@ -63,8 +64,8 @@ export const AuthProvider: React.FC = ({children}) => {
   const [urls, setUrls] = useState<Urls>({} as Urls);
 
   const getUrls = useCallback(async () => {
-    const response = await api.get('/Domain/GetUrls');
-    setUrls(response.data.urls);
+    const response = await DomainService.getUrLs();
+    setUrls(response);
   }, []);
 
   useEffect(() => {
@@ -92,13 +93,7 @@ export const AuthProvider: React.FC = ({children}) => {
   }, [getUrls, urls.fotos, urls.distintivos]);
 
   const signIn = useCallback(async ({email, password}) => {
-    const response = await api.post('/Token/Request', {
-      email,
-      password,
-    });
-
-    const {token} = response.data;
-
+    const {token} = await TokenService.request({login: {email, password}});
     const decodedToken: any = jwt_decode(token);
     const payloadObject = JSON.parse(decodedToken.payload.replace(/'/g, '"'));
 
@@ -145,8 +140,7 @@ export const AuthProvider: React.FC = ({children}) => {
       ['@futLiga:loggedUser', JSON.stringify(loggedUser)],
     ]);
 
-    api.defaults.headers.authorization = `Bearer ${token}`;
-
+    Authorization(token);
     setData({token, user, loggedUser});
   }, []);
 

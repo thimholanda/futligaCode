@@ -1,161 +1,132 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
-import {Calendar} from 'react-native-calendars';
-import {View, Image, Text} from 'react-native';
-import {SafeAreaView} from 'react-navigation';
 
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {getBottomSpace} from 'react-native-iphone-x-helper';
 import {ScrollView} from 'react-native-gesture-handler';
-
-import imgBg from '../../assets/bg-signin.png';
-import mask from '../../assets/masks/calendar-mask.png';
 import {RegularBar} from '../../components/RegularBar';
 import localePtBr from '../../utils/calendar/locales/localePtBr';
+import ScheduleItem from '../../components/ScheduleItem';
+import {Container, RootView} from './styles';
+import {Text, TouchableOpacity, View} from 'react-native';
+import {Row} from '../../components/Row';
+import colors from '../../styles/colors';
+import fonts from '../../styles/fonts';
+import {Modalize} from 'react-native-modalize';
 
-const ScheduleGame: React.FC = () => {
+import api from '../../services/api';
+import {useAuth} from '../../hooks/auth';
+import {ParamRoute} from '../../models/ParamRoute';
+
+const ScheduleGame: React.FC<ParamRoute> = paramRoute => {
   localePtBr();
+  const {loggedUser} = useAuth();
+  const [scheduleList, setScheduleList] = useState([]);
+  const {scheduleGameDate, scheduleType, scheduleTypeDest} =
+    paramRoute.route.params;
+  const modalizeRef = useRef<Modalize>(null);
+  const handleClosedModal = useCallback(() => {}, []);
+  const handleCloseModal = useCallback(() => {
+    modalizeRef.current?.close();
+  }, []);
+  const handleOpenModal = () => {
+    modalizeRef.current?.open();
+  };
+
+  //Construir a mecanica de carregar mais usando FlatList
+  const getScheduleList = useCallback(async () => {
+    const response = await api.get(
+      '/Calendario/' +
+        scheduleType +
+        '/Exibir' +
+        scheduleTypeDest +
+        '/' +
+        loggedUser.id +
+        '/' +
+        scheduleGameDate.dateString +
+        '/false/1',
+    );
+    setScheduleList(response.data.resultados);
+  }, [scheduleGameDate, scheduleType]);
+
+  useEffect(() => {
+    getScheduleList();
+  }, []);
 
   return (
-    <>
-      <SafeAreaView
-        style={{backgroundColor: '#717e7f', flexGrow: 1}}
-        forceInset={{bottom: 'never'}}>
-        <RegularBar title="MARCAR JOGO" />
-
-        <View style={{backgroundColor: 'white'}}>
-          <Calendar
-            theme={{
-              arrowColor: '#666',
-            }}
-            firstDay={1}
-            markedDates={{
-              '2021-03-23': {
-                selected: true,
-                marked: true,
-                dotColor: '#d9534f',
-                selectedColor: '#f0ad4e',
-              },
-              '2021-03-25': {
-                selected: true,
-                marked: false,
-                selectedColor: '#d9534f',
-                disabled: true,
-                disableTouchEvent: true,
-              },
-              '2021-03-28': {disabled: true, disableTouchEvent: true},
-              '2021-03-01': {
-                selected: true,
-                marked: true,
-                selectedColor: '#5bc0de',
-                dotColor: '#d9534f',
-              },
-            }}
-          />
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <View
+    <RootView>
+      <RegularBar title="AGENDAR JOGO" />
+      <Container>
+        <ScrollView>
+          {/* <FlatList
+            data={scheduleList}
+            keyExtractor={item=>String(item.mandanteId)}
+            renderItem={({item})=>(
+                <ScheduleItem data={item}/>
+            )}
+            horizontal
+            showsHorizontalScrollIndicator={false}>
+          </FlatList> */}
+          {scheduleList.map(scheduleItem => (
+            <ScheduleItem data={scheduleItem}></ScheduleItem>
+          ))}
+        </ScrollView>
+      </Container>
+      <Modalize
+        onClosed={handleClosedModal}
+        modalStyle={{overflow: 'hidden'}}
+        withHandle={false}
+        adjustToContentHeight={true}
+        HeaderComponent={
+          <View>
+            <Text
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                margin: 20,
+                fontFamily: fonts.regular,
+                color: colors.dark_gray,
+                textAlign: 'center',
+                fontSize: 16,
+                paddingTop: 14,
               }}>
-              <View
-                style={{
-                  width: 12,
-                  height: 12,
-                  backgroundColor: '#5bc0de',
-                  marginRight: 5,
-                  borderRadius: 50,
-                }}
-              />
-              <Text
-                style={{
-                  fontFamily: 'Oswald-Regular',
-                  color: '#666',
-                  fontSize: 12,
-                  lineHeight: 16,
-                }}>
-                DATA FUTLIGA
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                margin: 20,
-              }}>
-              <View
-                style={{
-                  width: 12,
-                  height: 12,
-                  backgroundColor: '#f0ad4e',
-                  marginRight: 5,
-                  borderRadius: 50,
-                }}
-              />
-              <Text
-                style={{
-                  fontFamily: 'Oswald-Regular',
-                  color: '#666',
-                  fontSize: 12,
-                  lineHeight: 16,
-                }}>
-                FERIADO
-              </Text>
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                margin: 20,
-              }}>
-              <View
-                style={{
-                  width: 12,
-                  height: 12,
-                  backgroundColor: '#d9534f',
-                  marginRight: 5,
-                  borderRadius: 50,
-                }}
-              />
-              <Text
-                style={{
-                  fontFamily: 'Oswald-Regular',
-                  color: '#666',
-                  fontSize: 12,
-                  lineHeight: 16,
-                }}>
-                FECHADO
-              </Text>
-            </View>
+              Marcar jogo como
+            </Text>
           </View>
-        </View>
-        <View style={{flex: 1, overflow: 'hidden'}}>
-          <Image
-            source={imgBg}
-            resizeMode="cover"
-            style={{position: 'absolute', width: '100%', left: 0, bottom: 0}}
-          />
-          <Image
-            source={mask}
-            resizeMode="cover"
+        }
+        ref={modalizeRef}>
+        <View style={{flex: 1, paddingHorizontal: 12, paddingVertical: 12}}>
+          <Row
             style={{
-              position: 'absolute',
-              left: 0,
-              top: -1,
-              width: '100%',
-              height: 300,
-            }}
-          />
-          <ScrollView style={{paddingHorizontal: 20}} />
+              alignItems: 'center',
+              justifyContent: 'space-around',
+              paddingVertical: 20,
+            }}>
+            <View>
+              <Text>Ola mundo!</Text>
+            </View>
+          </Row>
         </View>
-      </SafeAreaView>
-    </>
+        <View
+          style={{
+            width: '100%',
+            backgroundColor: colors.bright_gray,
+            paddingVertical: 14,
+            paddingBottom: getBottomSpace() + 16,
+            borderStyle: 'solid',
+            borderTopWidth: 1,
+            borderTopColor: colors.border_gray,
+          }}>
+          <TouchableOpacity onPress={handleCloseModal}>
+            <Text
+              style={{
+                fontFamily: fonts.regular,
+                fontSize: 16,
+                color: colors.dark_gray,
+                textAlign: 'center',
+              }}>
+              Cancelar
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modalize>
+    </RootView>
   );
 };
 

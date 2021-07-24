@@ -18,11 +18,7 @@ const Routes: React.FC = () => {
     );
   }
 
-  return user && urls.distintivos && urls.fotos ? (
-    <AppRoutes />
-  ) : (
-    <AuthRoutes />
-  );
+  return user ? <AppRoutes /> : <AuthRoutes />;
 };
 
 export default Routes;

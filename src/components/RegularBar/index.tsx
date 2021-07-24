@@ -3,16 +3,25 @@ import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Image, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useAuth} from '../../hooks/auth';
 
 import {Container} from './styles';
 
 interface Props {
   title: string;
+  logout?: boolean;
 }
 
-export const RegularBar: React.FC<Props> = ({title}) => {
+export const RegularBar: React.FC<Props> = ({title, logout}) => {
   const navigation = useNavigation();
-
+  const {signOut} = useAuth();
+  const onActionGoBack = () => {
+    if (logout) {
+      signOut();
+    } else {
+      navigation.goBack();
+    }
+  };
   return (
     <>
       <Container>
@@ -40,7 +49,7 @@ export const RegularBar: React.FC<Props> = ({title}) => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              onPress={() => navigation.goBack()}>
+              onPress={onActionGoBack}>
               <Image
                 style={{width: '100%', height: 21}}
                 source={require('../../../src/assets/voltar.png')}

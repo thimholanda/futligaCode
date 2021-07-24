@@ -32,7 +32,7 @@ import {
 } from './styles';
 
 import iconSchedule from '../../assets/icon-schedule-game.png';
-import api from '../../services/api';
+import {api} from '../../services/api';
 import {Modalize} from 'react-native-modalize';
 import colors from '../../styles/colors';
 import fonts from '../../styles/fonts';
@@ -40,6 +40,7 @@ import fonts from '../../styles/fonts';
 import IconHome from '../../assets/icon-home.svg';
 import IconRoad from '../../assets/icon-road.svg';
 import {useNavigation} from '@react-navigation/native';
+import {EquipesService} from '../../services';
 
 interface IScheduleData {
   dataJogo: string;
@@ -79,6 +80,7 @@ const Dashboard: React.FC = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [teamInfo, setTeamInfo] = useState<ITeamInfo>({} as ITeamInfo);
   const [scheduleType, setScheduleType] = useState('');
+  const [scheduleTypeDest, setScheduleTypeDest] = useState('');
 
   const userName = useMemo(() => {
     return loggedUser.nomeApresentacao.toUpperCase();
@@ -101,15 +103,30 @@ const Dashboard: React.FC = () => {
 
   const handleClosedModal = useCallback(() => {
     if (scheduleType !== '') {
-      navigation.navigate('ScheduleGame');
+      navigation.navigate('CalendarGame', {
+        scheduleType: scheduleType,
+        scheduleTypeDest: scheduleTypeDest,
+      });
     }
   }, [navigation, scheduleType]);
 
-  const handleScheduleGameType = useCallback((type: string) => {
-    setScheduleType(type);
+  const handleScheduleGameType = useCallback(
+    (type: string, typeDest: string) => {
+      setScheduleType(type);
+      setScheduleTypeDest(typeDest);
+    },
+    [],
+  );
+
+  const getEquipesListar2 = useCallback(async () => {
+    const response = await EquipesService.listar2({
+      equipe: parseInt(loggedUser.id),
+    });
+    console.log('response', response);
   }, []);
 
   useEffect(() => {
+    getEquipesListar2();
     api.get(`Equipes/${loggedUser.id}/Agenda/Listar`).then(response =>
       setSchedule(
         response.data.agenda.map((item: IScheduleData) => {
@@ -145,8 +162,7 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <MainView>
-        <RegularBar title={userName} />
-
+        <RegularBar title={userName} logout={true} />
         <MainContainer>
           <RegularBackground />
           <RegularScroll>
@@ -290,7 +306,7 @@ const Dashboard: React.FC = () => {
             }}>
             <View>
               <TouchableOpacity
-                onPress={() => handleScheduleGameType('mandante')}
+                onPress={() => handleScheduleGameType('Mandante', 'Visitantes')}
                 style={{
                   width: 60,
                   height: 60,
@@ -314,7 +330,7 @@ const Dashboard: React.FC = () => {
             </View>
             <View>
               <TouchableOpacity
-                onPress={() => handleScheduleGameType('visitante')}
+                onPress={() => handleScheduleGameType('Visitante', 'Mandantes')}
                 style={{
                   width: 60,
                   height: 60,
