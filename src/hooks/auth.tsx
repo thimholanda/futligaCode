@@ -66,9 +66,7 @@ export const AuthProvider: React.FC = ({children}) => {
 
       const equipes: Equipe[] = equipesArray.map(equipe => {
         return {
-          distintivo: equipe.Distintivo
-            ? equipe.Distintivo
-            : Config.distintivoDefault,
+          distintivo: equipe.Distintivo,
           id: equipe.Id,
           nomeApresentacao: equipe.NomeApresentacao,
           nomeCompleto: equipe.NomeCompleto,

@@ -257,7 +257,6 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				25F7677183BA8ED6611C0D7A /* [CP] Embed Pods Frameworks */,
 				06889FD7B0110D0AC598FDF4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -280,7 +279,6 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				952D8B9E73F00DED13EC6F49 /* [CP] Embed Pods Frameworks */,
 				DAFB6A45A4141676CA6A84DC /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -404,40 +402,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-appfutliga-appfutligaTests/Pods-appfutliga-appfutligaTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		25F7677183BA8ED6611C0D7A /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-appfutliga-appfutligaTests/Pods-appfutliga-appfutligaTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-appfutliga-appfutligaTests/Pods-appfutliga-appfutligaTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-appfutliga-appfutligaTests/Pods-appfutliga-appfutligaTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		952D8B9E73F00DED13EC6F49 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-appfutliga/Pods-appfutliga-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-appfutliga/Pods-appfutliga-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-appfutliga/Pods-appfutliga-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		DAFB6A45A4141676CA6A84DC /* [CP] Copy Pods Resources */ = {
