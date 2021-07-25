@@ -18,8 +18,7 @@ export function AdjustableImage({
     image = IconDefault;
     isUri = false;
   }
-
-    return (
+  return (
     <Container
       resizeMode="contain"
       width={0}

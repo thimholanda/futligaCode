@@ -2,6 +2,8 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Carousel from 'react-native-snap-carousel';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
 import {Text, View, TouchableOpacity} from 'react-native';
+import {Modalize} from 'react-native-modalize';
+import {useNavigation} from '@react-navigation/native';
 
 import {useAuth} from '../../hooks/auth';
 
@@ -12,9 +14,9 @@ import {Row} from '../../components/Row';
 import MainView from '../../components/MainView';
 import {RegularBar} from '../../components/RegularBar';
 import RegularScroll from '../../components/RegularScroll';
-
 import {ButtonFeaturedBox} from '../../components/ButtonFeaturedBox';
 import {FeaturedBox} from '../../components/FeaturedBox';
+
 import {
   Badge,
   BadgeText,
@@ -31,50 +33,24 @@ import {
   TitleTeam,
 } from './styles';
 
-import iconSchedule from '../../assets/icon-schedule-game.png';
-import {api} from '../../services/api';
-import {Modalize} from 'react-native-modalize';
 import colors from '../../styles/colors';
 import fonts from '../../styles/fonts';
 
+import iconSchedule from '../../assets/icon-schedule-game.png';
 import IconHome from '../../assets/icon-home.svg';
 import IconRoad from '../../assets/icon-road.svg';
-import {useNavigation} from '@react-navigation/native';
+
 import {EquipesService} from '../../services';
 
-interface IScheduleData {
-  dataJogo: string;
-  ano: String;
-  dia: String;
-  mes: String;
-  horaInicio: string;
-  mandante: {
-    id: string;
-    nomeApresentacao: string;
-    distintivo: string;
-  };
-  visitante: {
-    id: string;
-    nomeApresentacao: string;
-    distintivo: string;
-  };
-}
-
-interface ITeamInfo {
-  fundacao: string;
-  uf: string;
-  bairro: string;
-}
+import {IScheduleData, ITeamInfo} from '../../models';
 
 const Dashboard: React.FC = () => {
   const navigation = useNavigation();
-
   const {loggedUser, urls} = useAuth();
   const carouselRef = useRef<Carousel<IScheduleData>>(
     {} as Carousel<IScheduleData>,
   );
   const modalizeRef = useRef<Modalize>(null);
-
   const [schedule, setSchedule] = useState<IScheduleData[]>([]);
   const [carouselWidth, setCarouselWidth] = useState(100);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -119,37 +95,36 @@ const Dashboard: React.FC = () => {
   );
 
   const getEquipesListar2 = useCallback(async () => {
-    const response = await EquipesService.listar2({
+    return await EquipesService.listar2({
       equipe: parseInt(loggedUser.id),
     });
-    console.log('response', response);
-  }, []);
+  }, [loggedUser]);
+
+  const getTeamInfo = useCallback(async () => {
+    const response = await EquipesService.equipes({
+      codigo: parseInt(loggedUser.id),
+    });
+    setTeamInfo(response);
+  }, [loggedUser]);
 
   useEffect(() => {
-    getEquipesListar2();
-    api.get(`Equipes/${loggedUser.id}/Agenda/Listar`).then(response =>
+    getTeamInfo();
+    getEquipesListar2().then(response => {
+      let agendas = response.agenda as Array<any>;
       setSchedule(
-        response.data.agenda.map((item: IScheduleData) => {
+        agendas.map((item: IScheduleData) => {
           item.ano = item.dataJogo.slice(0, 4);
           item.mes = item.dataJogo.slice(4, 6);
           item.dia = item.dataJogo.slice(6, 8);
           return item;
         }),
-      ),
-    );
-  }, [loggedUser.id]);
+      );
+    });
 
-  useEffect(() => {
     if (scheduleType !== '') {
       modalizeRef.current?.close();
     }
-  }, [scheduleType]);
-
-  useEffect(() => {
-    api.get(`Equipes/${loggedUser.id}`).then(response => {
-      setTeamInfo(response.data);
-    });
-  }, [loggedUser.id]);
+  }, [loggedUser, scheduleType]);
 
   const since = useMemo(() => {
     if (teamInfo.fundacao) {
@@ -157,7 +132,7 @@ const Dashboard: React.FC = () => {
       sinceFormated.slice(0, 1);
       return `${sinceFormated}`;
     }
-  }, [teamInfo.fundacao]);
+  }, [teamInfo]);
 
   return (
     <>
@@ -174,7 +149,13 @@ const Dashboard: React.FC = () => {
                 title="MEU TIME"
                 onPress={() => {}}>
                 <ContainerAvatar>
-                  <AdjustableImage size="72%" isUri={true} image={avatar} />
+                  <AdjustableImage
+                    size="72%"
+                    isUri={true}
+                    image={
+                      'https://www.futliga.com.br/imagens/distintivos/15078-v01.png'
+                    }
+                  />
                   <View>
                     <TextSince>Desde {since}</TextSince>
                     <TextDistrict>
