@@ -47,7 +47,9 @@ export const AuthProvider: React.FC = ({children}) => {
   const signIn = useCallback(
     async ({email, password}) => {
       getUrls();
-      const {token} = await TokenService.request({login: {email, password}});
+      const {token} = await TokenService.requestToken({
+        login: {email, password},
+      });
       const decodedToken: any = jwt_decode(token);
       const payloadObject = JSON.parse(decodedToken.payload.replace(/'/g, '"'));
 

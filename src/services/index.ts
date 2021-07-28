@@ -2,12 +2,7 @@
 // @ts-nocheck
 /* eslint-disable */
 
-import {
-  IRequestOptions,
-  IRequestConfig,
-  getConfigs,
-  axios,
-} from './serviceOptions';
+import { IRequestOptions, IRequestConfig, getConfigs, axios } from './serviceOptions';
 export const basePath = '';
 
 export interface IList<T> extends Array<T> {}
@@ -47,23 +42,18 @@ export class CalendarioService {
   /**
    *
    */
-  static exibir(
+  static getCalendarioMandante(
     params: {
       /**  */
       equipe: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Calendario/Mandante/Exibir/{equipe}';
       url = url.replace('{equipe}', params['equipe'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -74,7 +64,7 @@ export class CalendarioService {
   /**
    *
    */
-  static exibirVisitantes(
+  static getVisitantesDisponiveis(
     params: {
       /**  */
       equipe: number;
@@ -109,23 +99,16 @@ export class CalendarioService {
       /**  */
       equipeId?: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath +
-        '/api/Calendario/Mandante/ExibirVisitantes/{equipe}/{data}/{rodadaFutLiga}/{pagina}';
+      let url = basePath + '/api/Calendario/Mandante/ExibirVisitantes/{equipe}/{data}/{rodadaFutLiga}/{pagina}';
       url = url.replace('{equipe}', params['equipe'] + '');
       url = url.replace('{data}', params['data'] + '');
       url = url.replace('{rodadaFutLiga}', params['rodadaFutLiga'] + '');
       url = url.replace('{pagina}', params['pagina'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
       configs.params = {
         distanciaInicial: params['distanciaInicial'],
         distanciaFinal: params['distanciaFinal'],
@@ -138,7 +121,7 @@ export class CalendarioService {
         bairro: params['bairro'],
         categoriaId: params['categoriaId'],
         nome: params['nome'],
-        equipeId: params['equipeId'],
+        equipeId: params['equipeId']
       };
       let data = null;
 
@@ -149,7 +132,7 @@ export class CalendarioService {
   /**
    *
    */
-  static exibirVisitantesAgrupados(
+  static getVisitantesDisponiveisAgrupados(
     params: {
       /**  */
       equipe: number;
@@ -186,22 +169,15 @@ export class CalendarioService {
       /**  */
       equipeId?: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath +
-        '/api/Calendario/Mandante/ExibirVisitantesAgrupados/{equipe}/{data}/{agrupadoPor}';
+      let url = basePath + '/api/Calendario/Mandante/ExibirVisitantesAgrupados/{equipe}/{data}/{agrupadoPor}';
       url = url.replace('{equipe}', params['equipe'] + '');
       url = url.replace('{data}', params['data'] + '');
       url = url.replace('{agrupadoPor}', params['agrupadoPor'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
       configs.params = {
         distanciaInicial: params['distanciaInicial'],
         distanciaFinal: params['distanciaFinal'],
@@ -216,7 +192,7 @@ export class CalendarioService {
         localMandoId: params['localMandoId'],
         horario: params['horario'],
         nome: params['nome'],
-        equipeId: params['equipeId'],
+        equipeId: params['equipeId']
       };
       let data = null;
 
@@ -227,23 +203,18 @@ export class CalendarioService {
   /**
    *
    */
-  static exibir1(
+  static getCalendarioVisitante(
     params: {
       /**  */
       equipe: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Calendario/Visitante/Exibir/{equipe}';
       url = url.replace('{equipe}', params['equipe'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -254,7 +225,7 @@ export class CalendarioService {
   /**
    *
    */
-  static exibirMandantes(
+  static getMandantesDisponiveis(
     params: {
       /**  */
       equipe: number;
@@ -287,23 +258,16 @@ export class CalendarioService {
       /**  */
       equipeId?: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath +
-        '/api/Calendario/Visitante/ExibirMandantes/{equipe}/{data}/{rodadaFutLiga}/{pagina}';
+      let url = basePath + '/api/Calendario/Visitante/ExibirMandantes/{equipe}/{data}/{rodadaFutLiga}/{pagina}';
       url = url.replace('{equipe}', params['equipe'] + '');
       url = url.replace('{data}', params['data'] + '');
       url = url.replace('{rodadaFutLiga}', params['rodadaFutLiga'] + '');
       url = url.replace('{pagina}', params['pagina'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
       configs.params = {
         distanciaInicial: params['distanciaInicial'],
         distanciaFinal: params['distanciaFinal'],
@@ -315,7 +279,7 @@ export class CalendarioService {
         localMandoId: params['localMandoId'],
         horario: params['horario'],
         nome: params['nome'],
-        equipeId: params['equipeId'],
+        equipeId: params['equipeId']
       };
       let data = null;
 
@@ -326,7 +290,7 @@ export class CalendarioService {
   /**
    *
    */
-  static exibirMandantesAgrupados(
+  static getMandantesDisponiveisAgrupados(
     params: {
       /**  */
       equipe: number;
@@ -357,22 +321,15 @@ export class CalendarioService {
       /**  */
       equipeId?: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath +
-        '/api/Calendario/Visitante/ExibirMandantesAgrupados/{equipe}/{data}/{agrupadoPor}';
+      let url = basePath + '/api/Calendario/Visitante/ExibirMandantesAgrupados/{equipe}/{data}/{agrupadoPor}';
       url = url.replace('{equipe}', params['equipe'] + '');
       url = url.replace('{data}', params['data'] + '');
       url = url.replace('{agrupadoPor}', params['agrupadoPor'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
       configs.params = {
         distanciaInicial: params['distanciaInicial'],
         distanciaFinal: params['distanciaFinal'],
@@ -384,7 +341,7 @@ export class CalendarioService {
         localMandoId: params['localMandoId'],
         horario: params['horario'],
         nome: params['nome'],
-        equipeId: params['equipeId'],
+        equipeId: params['equipeId']
       };
       let data = null;
 
@@ -402,12 +359,7 @@ export class DomainService {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Domain/GetURLs';
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -421,23 +373,18 @@ export class EquipesService {
   /**
    *
    */
-  static equipes(
+  static get(
     params: {
       /**  */
       codigo: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Equipes/{codigo}';
       url = url.replace('{codigo}', params['codigo'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -448,7 +395,7 @@ export class EquipesService {
   /**
    *
    */
-  static listar(
+  static getAll(
     params: {
       /**  */
       pagina: number;
@@ -469,18 +416,13 @@ export class EquipesService {
       /**  */
       longitude?: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Equipes/Listar/{pagina}';
       url = url.replace('{pagina}', params['pagina'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
       configs.params = {
         unidade: params['unidade'],
         genero: params['genero'],
@@ -489,7 +431,7 @@ export class EquipesService {
         tipoMandanteVisitante: params['tipoMandanteVisitante'],
         nome: params['nome'],
         latitude: params['latitude'],
-        longitude: params['longitude'],
+        longitude: params['longitude']
       };
       let data = null;
 
@@ -500,26 +442,21 @@ export class EquipesService {
   /**
    *
    */
-  static listar1(
+  static getSeguidores(
     params: {
       /**  */
       pagina: number;
       /**  */
       equipe: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Equipes/{equipe}/Seguidores/Listar/{pagina}';
       url = url.replace('{pagina}', params['pagina'] + '');
       url = url.replace('{equipe}', params['equipe'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -530,23 +467,18 @@ export class EquipesService {
   /**
    *
    */
-  static listar2(
+  static getAgenda(
     params: {
       /**  */
       equipe: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Equipes/{equipe}/Agenda/Listar';
       url = url.replace('{equipe}', params['equipe'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -557,7 +489,7 @@ export class EquipesService {
   /**
    *
    */
-  static listar3(
+  static getResultados(
     params: {
       /**  */
       equipe: number;
@@ -566,20 +498,15 @@ export class EquipesService {
       /**  */
       ano?: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Equipes/{equipe}/Resultados/Listar/{pagina}';
       url = url.replace('{equipe}', params['equipe'] + '');
       url = url.replace('{pagina}', params['pagina'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
-      configs.params = {ano: params['ano']};
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+      configs.params = { ano: params['ano'] };
       let data = null;
 
       configs.data = data;
@@ -589,26 +516,21 @@ export class EquipesService {
   /**
    *
    */
-  static exibirTemporada(
+  static getRanking(
     params: {
       /**  */
       equipe: number;
       /**  */
       ano?: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Equipes/{equipe}/Ranking/ExibirTemporada';
       url = url.replace('{equipe}', params['equipe'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
-      configs.params = {ano: params['ano']};
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+      configs.params = { ano: params['ano'] };
       let data = null;
 
       configs.data = data;
@@ -618,24 +540,18 @@ export class EquipesService {
   /**
    *
    */
-  static exibirTemporadasDisputadas(
+  static getRankingsDisputados(
     params: {
       /**  */
       equipe: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath + '/api/Equipes/{equipe}/Ranking/ExibirTemporadasDisputadas';
+      let url = basePath + '/api/Equipes/{equipe}/Ranking/ExibirTemporadasDisputadas';
       url = url.replace('{equipe}', params['equipe'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -646,27 +562,21 @@ export class EquipesService {
   /**
    *
    */
-  static exibirRankingDetalhado(
+  static getRankingDetalhado(
     params: {
       /**  */
       equipe: number;
       /**  */
       ano: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath + '/api/Equipes/{equipe}/Ranking/ExibirRankingDetalhado/{ano}';
+      let url = basePath + '/api/Equipes/{equipe}/Ranking/ExibirRankingDetalhado/{ano}';
       url = url.replace('{equipe}', params['equipe'] + '');
       url = url.replace('{ano}', params['ano'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -680,16 +590,11 @@ export class FaixasEtariasService {
   /**
    *
    */
-  static listar(options: IRequestOptions = {}): Promise<FaixaEtaria[]> {
+  static getAll(options: IRequestOptions = {}): Promise<FaixaEtaria[]> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/FaixasEtarias/Listar';
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -703,16 +608,11 @@ export class GenerosService {
   /**
    *
    */
-  static listar(options: IRequestOptions = {}): Promise<Genero[]> {
+  static getAll(options: IRequestOptions = {}): Promise<Genero[]> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Generos/Listar';
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -723,23 +623,18 @@ export class GenerosService {
   /**
    *
    */
-  static generos(
+  static get(
     params: {
       /**  */
       codigo: string;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<Genero> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Generos/{codigo}';
       url = url.replace('{codigo}', params['codigo'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -753,28 +648,21 @@ export class JogosService {
   /**
    *
    */
-  static obterFlyerJogoAgendadoLiga(
+  static getFlyerJogoAgendadoLiga(
     params: {
       /**  */
       dataJogo: string;
       /**  */
       sequencia: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath +
-        '/api/Jogos/ObterFlyerJogoAgendadoLiga/{dataJogo}/{sequencia}';
+      let url = basePath + '/api/Jogos/ObterFlyerJogoAgendadoLiga/{dataJogo}/{sequencia}';
       url = url.replace('{dataJogo}', params['dataJogo'] + '');
       url = url.replace('{sequencia}', params['sequencia'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -785,27 +673,21 @@ export class JogosService {
   /**
    *
    */
-  static obterFlyerResultadoLiga(
+  static getFlyerResultadoLiga(
     params: {
       /**  */
       dataJogo: string;
       /**  */
       sequencia: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath + '/api/Jogos/ObterFlyerResultadoLiga/{dataJogo}/{sequencia}';
+      let url = basePath + '/api/Jogos/ObterFlyerResultadoLiga/{dataJogo}/{sequencia}';
       url = url.replace('{dataJogo}', params['dataJogo'] + '');
       url = url.replace('{sequencia}', params['sequencia'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -819,23 +701,18 @@ export class LocaisMandoService {
   /**
    *
    */
-  static locaisMando(
+  static get(
     params: {
       /**  */
       codigo: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/LocaisMando/{codigo}';
       url = url.replace('{codigo}', params['codigo'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -846,7 +723,7 @@ export class LocaisMandoService {
   /**
    *
    */
-  static listar(
+  static getLocaisMando(
     params: {
       /**  */
       pagina: number;
@@ -861,24 +738,19 @@ export class LocaisMandoService {
       /**  */
       longitude?: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/LocaisMando/Listar/{pagina}';
       url = url.replace('{pagina}', params['pagina'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
       configs.params = {
         unidade: params['unidade'],
         modalidade: params['modalidade'],
         nome: params['nome'],
         latitude: params['latitude'],
-        longitude: params['longitude'],
+        longitude: params['longitude']
       };
       let data = null;
 
@@ -892,16 +764,11 @@ export class ModalidadesService {
   /**
    *
    */
-  static modalidades(options: IRequestOptions = {}): Promise<Modalidade[]> {
+  static getAll(options: IRequestOptions = {}): Promise<Modalidade[]> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Modalidades';
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -915,7 +782,7 @@ export class RankingsService {
   /**
    *
    */
-  static mandante(
+  static getMandante(
     params: {
       /**  */
       ranking: number;
@@ -924,21 +791,15 @@ export class RankingsService {
       /**  */
       pagina: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath + '/api/Rankings/Listar/{ranking}/{ano}/Mandante/{pagina}';
+      let url = basePath + '/api/Rankings/Listar/{ranking}/{ano}/Mandante/{pagina}';
       url = url.replace('{ranking}', params['ranking'] + '');
       url = url.replace('{ano}', params['ano'] + '');
       url = url.replace('{pagina}', params['pagina'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -949,7 +810,7 @@ export class RankingsService {
   /**
    *
    */
-  static visitante(
+  static getVisitante(
     params: {
       /**  */
       ranking: number;
@@ -958,21 +819,15 @@ export class RankingsService {
       /**  */
       pagina: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath + '/api/Rankings/Listar/{ranking}/{ano}/Visitante/{pagina}';
+      let url = basePath + '/api/Rankings/Listar/{ranking}/{ano}/Visitante/{pagina}';
       url = url.replace('{ranking}', params['ranking'] + '');
       url = url.replace('{ano}', params['ano'] + '');
       url = url.replace('{pagina}', params['pagina'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -983,7 +838,7 @@ export class RankingsService {
   /**
    *
    */
-  static listarPorProximidade(
+  static getRankingPorProximidade(
     params: {
       /**  */
       quantidadeDeSugestoes: number;
@@ -994,26 +849,16 @@ export class RankingsService {
       /**  */
       modalidade?: string;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath +
-        '/api/Rankings/ListarPorProximidade/{quantidadeDeSugestoes}/{latitude}/{longitude}';
-      url = url.replace(
-        '{quantidadeDeSugestoes}',
-        params['quantidadeDeSugestoes'] + '',
-      );
+      let url = basePath + '/api/Rankings/ListarPorProximidade/{quantidadeDeSugestoes}/{latitude}/{longitude}';
+      url = url.replace('{quantidadeDeSugestoes}', params['quantidadeDeSugestoes'] + '');
       url = url.replace('{latitude}', params['latitude'] + '');
       url = url.replace('{longitude}', params['longitude'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
-      configs.params = {modalidade: params['modalidade']};
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+      configs.params = { modalidade: params['modalidade'] };
       let data = null;
 
       configs.data = data;
@@ -1026,16 +871,11 @@ export class RodadasFutLigaService {
   /**
    *
    */
-  static temporadas(options: IRequestOptions = {}): Promise<any> {
+  static getTemporadas(options: IRequestOptions = {}): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/RodadasFutLiga/Temporadas';
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -1046,23 +886,18 @@ export class RodadasFutLigaService {
   /**
    *
    */
-  static unidades(
+  static getUnidades(
     params: {
       /**  */
       ano: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/RodadasFutLiga/Unidades/{ano}';
       url = url.replace('{ano}', params['ano'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -1073,26 +908,21 @@ export class RodadasFutLigaService {
   /**
    *
    */
-  static rankings(
+  static getRankings(
     params: {
       /**  */
       ano: number;
       /**  */
       unidade: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/RodadasFutLiga/Rankings/{ano}/{unidade}';
       url = url.replace('{ano}', params['ano'] + '');
       url = url.replace('{unidade}', params['unidade'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -1103,26 +933,21 @@ export class RodadasFutLigaService {
   /**
    *
    */
-  static rodadas(
+  static getRodadas(
     params: {
       /**  */
       ano: number;
       /**  */
       ranking: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/RodadasFutLiga/Rodadas/{ano}/{ranking}';
       url = url.replace('{ano}', params['ano'] + '');
       url = url.replace('{ranking}', params['ranking'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -1133,7 +958,7 @@ export class RodadasFutLigaService {
   /**
    *
    */
-  static participantes(
+  static getParticipantee(
     params: {
       /**  */
       ano: number;
@@ -1144,22 +969,16 @@ export class RodadasFutLigaService {
       /**  */
       tipoEquipe?: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath + '/api/RodadasFutLiga/Participantes/{ano}/{ranking}/{semana}';
+      let url = basePath + '/api/RodadasFutLiga/Participantes/{ano}/{ranking}/{semana}';
       url = url.replace('{ano}', params['ano'] + '');
       url = url.replace('{ranking}', params['ranking'] + '');
       url = url.replace('{semana}', params['semana'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
-      configs.params = {tipoEquipe: params['tipoEquipe']};
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
+      configs.params = { tipoEquipe: params['tipoEquipe'] };
       let data = null;
 
       configs.data = data;
@@ -1178,7 +997,7 @@ export class RodadasFutLigaService {
       /**  */
       semana: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/RodadasFutLiga/Jogos/{ano}/{ranking}/{semana}';
@@ -1186,12 +1005,7 @@ export class RodadasFutLigaService {
       url = url.replace('{ranking}', params['ranking'] + '');
       url = url.replace('{semana}', params['semana'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -1205,22 +1019,17 @@ export class TokenService {
   /**
    *
    */
-  static request(
+  static requestToken(
     params: {
       /**  */
       login?: LoginRequest;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Token/Request';
 
-      const configs: IRequestConfig = getConfigs(
-        'post',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('post', 'application/json', url, options);
 
       let data = params['login'];
 
@@ -1234,23 +1043,18 @@ export class UsuariosService {
   /**
    *
    */
-  static usuarios(
+  static get(
     params: {
       /**  */
       codigo: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       let url = basePath + '/api/Usuarios/{codigo}';
       url = url.replace('{codigo}', params['codigo'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 
@@ -1261,27 +1065,21 @@ export class UsuariosService {
   /**
    *
    */
-  static listar(
+  static getEquipesSeguindo(
     params: {
       /**  */
       usuario: number;
       /**  */
       pagina: number;
     } = {} as any,
-    options: IRequestOptions = {},
+    options: IRequestOptions = {}
   ): Promise<any> {
     return new Promise((resolve, reject) => {
-      let url =
-        basePath + '/api/Usuarios/{usuario}/EquipesSeguindo/Listar/{pagina}';
+      let url = basePath + '/api/Usuarios/{usuario}/EquipesSeguindo/Listar/{pagina}';
       url = url.replace('{usuario}', params['usuario'] + '');
       url = url.replace('{pagina}', params['pagina'] + '');
 
-      const configs: IRequestConfig = getConfigs(
-        'get',
-        'application/json',
-        url,
-        options,
-      );
+      const configs: IRequestConfig = getConfigs('get', 'application/json', url, options);
 
       let data = null;
 

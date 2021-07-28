@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import Carousel from 'react-native-snap-carousel';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
-import {Text, View, TouchableOpacity} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import {Modalize} from 'react-native-modalize';
 import {useNavigation} from '@react-navigation/native';
 
@@ -43,6 +43,7 @@ import IconRoad from '../../assets/icon-road.svg';
 import {EquipesService} from '../../services';
 
 import {IScheduleData, ITeamInfo} from '../../models';
+import {TypeGame} from '../../enums';
 
 const Dashboard: React.FC = () => {
   const navigation = useNavigation();
@@ -55,8 +56,7 @@ const Dashboard: React.FC = () => {
   const [carouselWidth, setCarouselWidth] = useState(100);
   const [activeSlide, setActiveSlide] = useState(0);
   const [teamInfo, setTeamInfo] = useState<ITeamInfo>({} as ITeamInfo);
-  const [scheduleType, setScheduleType] = useState('');
-  const [scheduleTypeDest, setScheduleTypeDest] = useState('');
+  const [scheduleType, setScheduleType] = useState<TypeGame>(TypeGame.EMPTY);
 
   const userName = useMemo(() => {
     return loggedUser.nomeApresentacao.toUpperCase();
@@ -69,7 +69,7 @@ const Dashboard: React.FC = () => {
   }, [loggedUser, urls]);
 
   const handleScheduleGame = useCallback(() => {
-    setScheduleType('');
+    setScheduleType(TypeGame.EMPTY);
     modalizeRef.current?.open();
   }, []);
 
@@ -78,30 +78,25 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const handleClosedModal = useCallback(() => {
-    if (scheduleType !== '') {
+    if (scheduleType !== TypeGame.EMPTY) {
       navigation.navigate('CalendarGame', {
         scheduleType: scheduleType,
-        scheduleTypeDest: scheduleTypeDest,
       });
     }
   }, [navigation, scheduleType]);
 
-  const handleScheduleGameType = useCallback(
-    (type: string, typeDest: string) => {
-      setScheduleType(type);
-      setScheduleTypeDest(typeDest);
-    },
-    [],
-  );
+  const handleScheduleGameType = useCallback((type: TypeGame) => {
+    setScheduleType(type);
+  }, []);
 
   const getEquipesListar2 = useCallback(async () => {
-    return await EquipesService.listar2({
+    return await EquipesService.getAgenda({
       equipe: parseInt(loggedUser.id),
     });
   }, [loggedUser]);
 
   const getTeamInfo = useCallback(async () => {
-    const response = await EquipesService.equipes({
+    const response = await EquipesService.get({
       codigo: parseInt(loggedUser.id),
     });
     setTeamInfo(response);
@@ -124,7 +119,7 @@ const Dashboard: React.FC = () => {
     if (scheduleType !== '') {
       modalizeRef.current?.close();
     }
-  }, [loggedUser, scheduleType]);
+  }, [scheduleType]);
 
   const since = useMemo(() => {
     if (teamInfo.fundacao) {
@@ -149,13 +144,7 @@ const Dashboard: React.FC = () => {
                 title="MEU TIME"
                 onPress={() => {}}>
                 <ContainerAvatar>
-                  <AdjustableImage
-                    size="72%"
-                    isUri={true}
-                    image={
-                      'https://www.futliga.com.br/imagens/distintivos/15078-v01.png'
-                    }
-                  />
+                  <AdjustableImage size="72%" isUri={true} image={avatar} />
                   <View>
                     <TextSince>Desde {since}</TextSince>
                     <TextDistrict>
@@ -287,7 +276,7 @@ const Dashboard: React.FC = () => {
             }}>
             <View>
               <TouchableOpacity
-                onPress={() => handleScheduleGameType('Mandante', 'Visitantes')}
+                onPress={() => handleScheduleGameType(TypeGame.MANDANTE)}
                 style={{
                   width: 60,
                   height: 60,
@@ -306,12 +295,12 @@ const Dashboard: React.FC = () => {
                   textAlign: 'center',
                   fontSize: 14,
                 }}>
-                Mandante
+                {TypeGame.MANDANTE}
               </Text>
             </View>
             <View>
               <TouchableOpacity
-                onPress={() => handleScheduleGameType('Visitante', 'Mandantes')}
+                onPress={() => handleScheduleGameType(TypeGame.VISITANTE)}
                 style={{
                   width: 60,
                   height: 60,
@@ -330,7 +319,7 @@ const Dashboard: React.FC = () => {
                   textAlign: 'center',
                   fontSize: 14,
                 }}>
-                Visitante
+                {TypeGame.VISITANTE}
               </Text>
             </View>
           </Row>

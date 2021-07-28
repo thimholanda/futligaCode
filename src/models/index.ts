@@ -83,3 +83,56 @@ export interface ITeamInfo {
   uf: string;
   bairro: string;
 }
+
+export interface CalendarMarkedDay extends PropsCustom {
+  disableTouchEvent?: boolean;
+  dotColor?: string;
+  selectedColor?: string;
+  disabled?: boolean;
+  selected?: boolean;
+  marked?: boolean;
+}
+
+export interface CalendarioResponse {
+  calendario: Calendario;
+  configuracoes: Configuracoes;
+}
+
+export interface Calendario {
+  data: string;
+}
+
+export interface Configuracoes {
+  feriado: boolean;
+  rodada: boolean;
+  rodadaFutLiga: boolean;
+}
+
+export interface PropsCustom {
+  data?: any;
+}
+
+export interface EquipeInfo {
+  nome: number;
+  nomeApresentacao: string;
+  distintivo: string;
+  bairro: string;
+  cidade: string;
+}
+
+export interface PainelInfo {
+  distancia: number;
+  diasUltimoAcesso: number;
+  rankingAtualAdversario: number;
+  avaliacaoAdversario: number;
+}
+
+export interface ScheduleInfo {
+  data: string;
+  equipe: EquipeInfo;
+  painel: PainelInfo;
+}
+
+export interface ScheduleItemProps {
+  data: any;
+}
