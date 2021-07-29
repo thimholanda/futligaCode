@@ -114,18 +114,18 @@ const CalendarGame: React.FC<ParamRoute> = paramRoute => {
         dateSelected.dotColor = '#5bc0de';
       }
 
-      //Feriado
-      if (response.configuracoes.feriado === true) {
-        dateSelected.selected = true;
-        dateSelected.selectedColor = '#f0ad4e';
-        dateSelected.dotColor = '#f0ad4e';
-      }
-
       //Fechado
       if (response.configuracoes.rodada === null) {
         dateSelected.selected = true;
         dateSelected.selectedColor = '#d9534f';
         dateSelected.dotColor = '#d9534f';
+      }
+
+      //Feriado
+      if (response.configuracoes.feriado === true) {
+        dateSelected.selected = true;
+        dateSelected.selectedColor = '#f0ad4e';
+        dateSelected.dotColor = '#f0ad4e';
       }
 
       dateSelected.data = response;

@@ -44,14 +44,14 @@ const ScheduleGame: React.FC<ParamRoute> = paramRoute => {
     }
     let calendarioResponse: CalendarioResponse = scheduleGameData;
     let response: any[] = [];
-    if (scheduleType === TypeGame.VISITANTE) {
+    if (scheduleType === TypeGame.MANDANTE) {
       response = await CalendarioService.getVisitantesDisponiveis({
         equipe: parseInt(loggedUser.id),
         rodadaFutLiga: calendarioResponse.configuracoes.rodadaFutLiga,
         data: Convert.stringTodate(calendarioResponse.calendario.data),
         pagina: page,
       });
-    } else if (scheduleType === TypeGame.MANDANTE) {
+    } else if (scheduleType === TypeGame.VISITANTE) {
       response = await CalendarioService.getMandantesDisponiveis({
         equipe: parseInt(loggedUser.id),
         rodadaFutLiga: calendarioResponse.configuracoes.rodadaFutLiga,
