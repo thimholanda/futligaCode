@@ -92,6 +92,8 @@ const CalendarGame: React.FC<ParamRoute> = paramRoute => {
         disabled: true,
         disableTouchEvent: true,
         marked: true,
+        selectedColor: '#fff',
+        dotColor: '#fff',
       };
 
       //FutLiga
@@ -106,6 +108,7 @@ const CalendarGame: React.FC<ParamRoute> = paramRoute => {
 
       //Dia Normal
       if (
+        response.calendario.visitantesDisponiveis > 0 &&
         response.configuracoes.rodada !== null &&
         response.configuracoes.rodadaFutLiga === false
       ) {

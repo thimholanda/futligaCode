@@ -100,6 +100,7 @@ export interface CalendarioResponse {
 
 export interface Calendario {
   data: string;
+  visitantesDisponiveis: number;
 }
 
 export interface Configuracoes {
