@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {
   Image,
   View,
@@ -35,6 +35,7 @@ import logoImg from '../../assets/logo.png';
 import imgBg from '../../assets/bg-signin.png';
 import {FormHandles} from '@unform/core';
 import {SafeAreaView} from 'react-navigation';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 interface SignInFormData {
   email: string;
@@ -45,14 +46,44 @@ const SignIn: React.FC = () => {
   const passwordInputRef = useRef<TextInput>(null);
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
-
   const {signIn} = useAuth();
+
+  //Mock:Begin
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('');
+  const [items, setItems] = useState([
+    {
+      label: '--- MOCK (USUARIO) ---',
+      value: '',
+    },
+    {
+      label: 'usuario329@futliga.com.br',
+      value: 'usuario329@futliga.com.br',
+    },
+    {
+      label: 'usuario2632@futliga.com.br',
+      value: 'usuario2632@futliga.com.br',
+    },
+    {
+      label: 'usuario15078@futliga.com.br',
+      value: 'usuario15078@futliga.com.br',
+    },
+    {
+      label: 'usuario572@futliga.com.br',
+      value: 'usuario572@futliga.com.br',
+    },
+  ]);
+
+  const handleChangeUserMock = (value: any) => {
+    handleSignIn({
+      email: value,
+      password: 'senha',
+    });
+  };
+  //Mock:End
 
   const handleSignIn = useCallback(
     async (data: SignInFormData) => {
-      //todo: Mock
-      data.email = 'usuario15078@futliga.com.br';
-      data.password = 'senha';
       formRef.current?.setErrors({});
       try {
         const schema = Yup.object().shape({
@@ -150,7 +181,18 @@ const SignIn: React.FC = () => {
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
-
+      <DropDownPicker
+        style={{alignContent: 'center'}}
+        open={open}
+        value={value}
+        items={items}
+        setOpen={setOpen}
+        setValue={setValue}
+        setItems={setItems}
+        onChangeValue={value => {
+          handleChangeUserMock(value);
+        }}
+      />
       <ContainerCreateAccountButton>
         <CreateAccountButton
           onPress={() => {

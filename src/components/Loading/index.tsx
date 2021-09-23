@@ -1,11 +1,12 @@
 import React from 'react';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator} from 'react-native';
+import {Container, styles} from './styles';
 
 const Loading: React.FC = () => {
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <Container style={styles.container}>
       <ActivityIndicator size="large" color="#717e7f" />
-    </View>
+    </Container>
   );
 };
 

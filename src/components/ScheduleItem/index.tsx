@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import {Container} from './styles';
 
@@ -14,10 +14,33 @@ import {Image, Text, View, TouchableOpacity, Alert} from 'react-native';
 import {useAuth} from '../../hooks/auth';
 import {AdjustableImage} from '../AdjustableImage';
 import {ScheduleInfo, ScheduleItemProps} from '../../models';
+import {useNavigation} from '@react-navigation/native';
+import {Convert} from '../../utils';
+import {TypeGame} from '../../enums';
+import {LocaisMandoService} from '../../services';
 
-const ScheduleItem: React.FC<ScheduleItemProps> = ({data}) => {
-  let scheduleInfo: ScheduleInfo = data;
+interface Props {
+  data: object;
+  openInformation(value: object): void;
+  scheduleType: TypeGame;
+}
+
+const ScheduleItem: React.FC<Props> = ({
+  data,
+  openInformation,
+  scheduleType,
+}) => {
   const {urls} = useAuth();
+  const navigation = useNavigation();
+  const [locaisMando, setLocaisMando] = useState({});
+  let scheduleInfo: ScheduleInfo = data;
+
+  const locaisMandoByCodeFetch = useCallback(async (codigo: number) => {
+    if (!codigo) return null;
+    let response = await LocaisMandoService.get({codigo});
+    setLocaisMando(response);
+  }, []);
+
   const avatar = useMemo(() => {
     if (!scheduleInfo.equipe.distintivo)
       scheduleInfo.equipe.distintivo = '0-4.gif';
@@ -25,15 +48,41 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({data}) => {
   }, [scheduleInfo, urls]);
 
   const importantInformationHandle = useCallback(async () => {
-    Alert.alert('DEMO: Informação importante');
+    openInformation({
+      type: 1,
+      title: 'Informação importante',
+      data: [
+        'Alerta de Feriado\n\nFeriado prolongado de 04/09/2021 a 07/09/2021 - Independência do Brasil\nComo você está tentando marcar jogo para uma data de feriado, certifique-se de você terá número de jogadores suficientes para o jogo. Não deixe para cancelar o jogo na última hora. Além de evitar multas para sua equipe, você contribui para que a equipe adversária procure adversários disponíveis para esta data. Caso seja de seu interesse, bloqueie a data ou a semana em que sua equipe não está disponível.',
+        'Restrição de acesso\n\nAtenção, a equipe Interage está com acesso restrito à resposta de convites.\nSe você prosseguir, existe uma grande possibilidade deste convite não ser respondido a tempo, ou mesmo ser cancelado por inatividade de 7 dias.',
+      ],
+    });
   }, []);
 
   const detailedInformationHandle = useCallback(async () => {
-    Alert.alert('DEMO: Informação Detalhado');
-  }, []);
+    openInformation({
+      type: 2,
+      title: locaisMandoInfo.nomeCompleto,
+      data: {scheduleInfo, locaisMandoInfo},
+    });
+  }, [scheduleInfo, locaisMandoInfo]);
 
   const evaluationHandle = useCallback(async () => {
-    Alert.alert('DEMO: Avaliação');
+    openInformation({
+      type: 4,
+      title: 'Avaliação',
+      data: {
+        interage: 4,
+        pontualidade: 3,
+        cordialidade: 4,
+        elenco: 5,
+        uniforme: 5,
+        disciplina: 4,
+        competividade: 4,
+        tecnica: 2,
+        torcida: 3,
+        arbitragem: 4,
+      },
+    });
   }, []);
 
   //todo: verificar erro na conversao
@@ -51,9 +100,64 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({data}) => {
     ':' +
     checkZero(dateSchedule.getMinutes().toString());
 
+  const handleSelected = () => {
+    navigation.navigate('ScheduleGameInfo', {
+      params: {
+        information: scheduleInfo,
+        locaisMandoInfo: locaisMandoInfo,
+      },
+    });
+  };
+
+  const handleTimeSchedule = useCallback(async () => {
+    openInformation({
+      type: 3,
+      title: 'Mensagem FutLiga',
+      data: 'Partida se inicia às ' + timeSchedule,
+    });
+  }, []);
+
+  const handleLastAccess = useCallback(async () => {
+    console.log(Convert.stringTodate(new Date(), 'dd/MM/yyyy'));
+    // openInformation({
+    //   type: 3,
+    //   title: 'Mensagem FutLiga',
+    //   data:
+    //     'Último acesso em ' ,
+    // });
+  }, []);
+
+  const handleDistance = useCallback(async () => {
+    openInformation({
+      type: 3,
+      title: 'Mensagem FutLiga',
+      data:
+        'O local do adversário está a ' +
+        scheduleInfo.painel.distancia +
+        ' km de distância',
+    });
+  }, []);
+
+  const handleInvite = useCallback(async () => {
+    navigation.navigate('InviteGame', {
+      params: {
+        scheduleInfo,
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    locaisMandoByCodeFetch(scheduleInfo.equipe.mandante?.localMandoId);
+  }, []);
+
+  const locaisMandoInfo = useMemo(() => {
+    return locaisMando;
+  }, [locaisMando]);
+
   return (
-    <Container>
-      <View
+    <Container style={{backgroundColor: 'white'}}>
+      <TouchableOpacity
+        onPress={handleSelected}
         style={{
           paddingHorizontal: 20,
           flexDirection: 'row',
@@ -62,12 +166,11 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({data}) => {
           borderBottomColor: '#ccc',
           borderBottomWidth: 1,
         }}>
-        <AdjustableImage
+        <TouchableOpacity
           style={{flex: 1, width: 150, height: 100}}
-          size="100%"
-          isUri={true}
-          image={avatar}
-        />
+          onPress={handleSelected}>
+          <AdjustableImage size="100%" isUri={true} image={avatar} />
+        </TouchableOpacity>
         <View
           style={{
             flex: 2,
@@ -81,17 +184,20 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({data}) => {
                 alignContent: 'flex-start',
                 justifyContent: 'space-between',
               }}>
-              <TouchableOpacity>
-                <Text style={{fontSize: 15}}>
+              <TouchableOpacity onPress={handleSelected}>
+                <Text style={{fontSize: 15, maxWidth: 150}}>
                   {scheduleInfo.equipe.nomeApresentacao}
                 </Text>
-                <Text style={{fontSize: 11}}>??</Text>
                 <Text style={{fontSize: 11}}>
-                  {scheduleInfo.equipe.bairro}/{scheduleInfo.equipe.cidade}
+                  {locaisMandoInfo.nomeCompleto}
+                </Text>
+                <Text style={{fontSize: 11, maxWidth: 150}}>
+                  {locaisMandoInfo.bairro}/{locaisMandoInfo.cidade}
                 </Text>
               </TouchableOpacity>
               <View>
                 <TouchableOpacity
+                  onPress={handleTimeSchedule}
                   style={{
                     marginBottom: 5,
                     flexDirection: 'row',
@@ -105,6 +211,7 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({data}) => {
                   <Text style={{fontSize: 11}}>{timeSchedule}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  onPress={handleLastAccess}
                   style={{
                     marginBottom: 5,
                     flexDirection: 'row',
@@ -120,6 +227,7 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({data}) => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  onPress={handleDistance}
                   style={{
                     marginBottom: 5,
                     flexDirection: 'row',
@@ -189,12 +297,12 @@ const ScheduleItem: React.FC<ScheduleItemProps> = ({data}) => {
                 {scheduleInfo.painel.rankingAtualAdversario}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleInvite}>
               <Image source={imgSend} style={{width: 16, height: 16}}></Image>
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </Container>
   );
 };

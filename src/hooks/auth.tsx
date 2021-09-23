@@ -9,7 +9,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 import jwt_decode from 'jwt-decode';
 import {Authorization} from '../services/api';
 import {DomainService, TokenService} from '../services';
-import {AuthContextData, AuthState, Equipe, Urls, User} from '../models';
+import {
+  AuthContextData,
+  AuthState,
+  Equipe,
+  ScheduleResponse,
+  Urls,
+  User,
+} from '../models';
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
@@ -44,6 +51,15 @@ export const AuthProvider: React.FC = ({children}) => {
     loadStorageData();
   }, []);
 
+  const changeUser = useCallback(value => {
+    console.log(value);
+    setData(oldValue => ({
+      token: oldValue.token,
+      user: oldValue.user,
+      loggedUser: value,
+    }));
+  }, []);
+
   const signIn = useCallback(
     async ({email, password}) => {
       getUrls();
@@ -76,6 +92,7 @@ export const AuthProvider: React.FC = ({children}) => {
           situacaoCadastral: equipe.SituacaoCadastral,
         };
       });
+      //nao deixar passar se nao estiver nada EQUIPES
 
       const loggedUser = equipes[0];
       const user: User = {
@@ -115,6 +132,7 @@ export const AuthProvider: React.FC = ({children}) => {
         loggedUser: data.loggedUser,
         signIn,
         signOut,
+        changeUser,
         loading,
         token: data.token,
         urls,
@@ -122,6 +140,10 @@ export const AuthProvider: React.FC = ({children}) => {
       {children}
     </AuthContext.Provider>
   );
+
+  const setLogged = user => {
+    setData({token, user, loggedUser});
+  };
 };
 
 export function useAuth(): AuthContextData {

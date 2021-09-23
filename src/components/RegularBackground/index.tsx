@@ -1,10 +1,11 @@
 import React from 'react';
-import {ImageBackground} from './styles';
+import {Image} from 'react-native';
 
+import {styles} from './styles';
 import imgBg from '../../assets/regular-bg.png';
 
 const RegularBackground: React.FC = () => {
-  return <ImageBackground source={imgBg} />;
+  return <Image style={styles.container} source={imgBg} />;
 };
 
 export default RegularBackground;

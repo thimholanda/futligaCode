@@ -13,7 +13,6 @@ target 'appfutliga' do
   )
 
 
-
   target 'appfutligaTests' do
     inherit! :complete
     # Pods for testing

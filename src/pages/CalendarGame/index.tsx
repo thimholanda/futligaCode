@@ -1,14 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Calendar, DateObject} from 'react-native-calendars';
-import {View, Image, Text, TouchableOpacity} from 'react-native';
-
-import {ScrollView} from 'react-native-gesture-handler';
+import {View, Text, TouchableOpacity, Alert} from 'react-native';
 
 import {CalendarioService} from '../../services/index';
 
-import imgBg from '../../assets/bg-signin.png';
-import mask from '../../assets/masks/calendar-mask.png';
 import {useNavigation} from '@react-navigation/native';
 
 import {RegularBar} from '../../components/RegularBar';
@@ -29,6 +25,9 @@ import colors from '../../styles/colors';
 import {Row} from '../../components/Row';
 import MainView from '../../components/MainView';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
+import MainContainer from '../../components/MainContainer';
+import RegularBackground from '../../components/RegularBackground';
+import RegularScroll from '../../components/RegularScroll';
 
 const CalendarGame: React.FC<ParamRoute> = paramRoute => {
   localePtBr();
@@ -47,16 +46,25 @@ const CalendarGame: React.FC<ParamRoute> = paramRoute => {
   const handleOpenModal = (dateObject: DateObject) => {
     let calendarDate = calendarDates[dateObject.dateString];
     if (calendarDate) {
-      setCalendarChosenDayData(calendarDate.data);
-      modalizeRef.current?.open();
+      if (calendarDate.data.configuracoes.mensagemRodadaFutLiga) {
+        Alert.alert(
+          'Mensagem FutLiga',
+          calendarDate.data.configuracoes.mensagemRodadaFutLiga,
+        );
+      } else {
+        setCalendarChosenDayData(calendarDate.data);
+        modalizeRef.current?.open();
+      }
     }
   };
 
   const handleChosenDay = () => {
     handleCloseModal();
     navigation.navigate('ScheduleGame', {
-      scheduleGameData: calendarChosenDayData,
-      scheduleType: scheduleType,
+      params: {
+        calendarGameData: calendarChosenDayData,
+        scheduleType: scheduleType,
+      },
     });
   };
 
@@ -72,11 +80,11 @@ const CalendarGame: React.FC<ParamRoute> = paramRoute => {
 
   const getScheduleCalendarList = useCallback(async () => {
     let calendario: Calendario[] = [];
-    if (scheduleType === TypeGame.VISITANTE) {
+    if (scheduleType === TypeGame.VISITANT) {
       calendario = await CalendarioService.getCalendarioVisitante({
         equipe: parseInt(loggedUser.id),
       });
-    } else if (scheduleType === TypeGame.MANDANTE) {
+    } else if (scheduleType === TypeGame.CLIENT) {
       calendario = await CalendarioService.getCalendarioMandante({
         equipe: parseInt(loggedUser.id),
       });
@@ -150,120 +158,103 @@ const CalendarGame: React.FC<ParamRoute> = paramRoute => {
     <>
       <MainView>
         <RegularBar title="MARCAR JOGO" />
-
-        <View style={{backgroundColor: 'white'}}>
-          <Calendar
-            onDayPress={handleOpenModal}
-            theme={{
-              arrowColor: '#666',
-            }}
-            firstDay={1}
-            markedDates={calendarDates}
-          />
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                margin: 20,
-              }}>
-              <View
-                style={{
-                  width: 12,
-                  height: 12,
-                  backgroundColor: '#5bc0de',
-                  marginRight: 5,
-                  borderRadius: 50,
-                }}
-              />
-              <Text
-                style={{
-                  fontFamily: 'Oswald-Regular',
-                  color: '#666',
-                  fontSize: 12,
-                  lineHeight: 16,
-                }}>
-                DATA FUTLIGA
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                margin: 20,
-              }}>
-              <View
-                style={{
-                  width: 12,
-                  height: 12,
-                  backgroundColor: '#f0ad4e',
-                  marginRight: 5,
-                  borderRadius: 50,
-                }}
-              />
-              <Text
-                style={{
-                  fontFamily: 'Oswald-Regular',
-                  color: '#666',
-                  fontSize: 12,
-                  lineHeight: 16,
-                }}>
-                FERIADO
-              </Text>
-            </View>
+        <MainContainer>
+          <RegularBackground />
+          <RegularScroll>
+            <Calendar
+              onDayPress={handleOpenModal}
+              theme={{
+                arrowColor: '#666',
+              }}
+              firstDay={1}
+              markedDates={calendarDates}
+            />
 
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                margin: 20,
+                justifyContent: 'center',
               }}>
               <View
                 style={{
-                  width: 12,
-                  height: 12,
-                  backgroundColor: '#d9534f',
-                  marginRight: 5,
-                  borderRadius: 50,
-                }}
-              />
-              <Text
-                style={{
-                  fontFamily: 'Oswald-Regular',
-                  color: '#666',
-                  fontSize: 12,
-                  lineHeight: 16,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  margin: 20,
                 }}>
-                FECHADO
-              </Text>
+                <View
+                  style={{
+                    width: 12,
+                    height: 12,
+                    backgroundColor: '#5bc0de',
+                    marginRight: 5,
+                    borderRadius: 50,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontFamily: 'Oswald-Regular',
+                    color: '#666',
+                    fontSize: 12,
+                    lineHeight: 16,
+                  }}>
+                  DATA FUTLIGA
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  margin: 20,
+                }}>
+                <View
+                  style={{
+                    width: 12,
+                    height: 12,
+                    backgroundColor: '#f0ad4e',
+                    marginRight: 5,
+                    borderRadius: 50,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontFamily: 'Oswald-Regular',
+                    color: '#666',
+                    fontSize: 12,
+                    lineHeight: 16,
+                  }}>
+                  FERIADO
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  margin: 20,
+                }}>
+                <View
+                  style={{
+                    width: 12,
+                    height: 12,
+                    backgroundColor: '#d9534f',
+                    marginRight: 5,
+                    borderRadius: 50,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontFamily: 'Oswald-Regular',
+                    color: '#666',
+                    fontSize: 12,
+                    lineHeight: 16,
+                  }}>
+                  FECHADO
+                </Text>
+              </View>
             </View>
-          </View>
-        </View>
-        <View style={{flex: 1, overflow: 'hidden'}}>
-          <Image
-            source={imgBg}
-            resizeMode="cover"
-            style={{position: 'absolute', width: '100%', left: 0, bottom: 0}}
-          />
-          <Image
-            source={mask}
-            resizeMode="cover"
-            style={{
-              position: 'absolute',
-              left: 0,
-              top: -1,
-              width: '100%',
-              height: 300,
-            }}
-          />
-          <ScrollView style={{paddingHorizontal: 20}} />
-        </View>
+          </RegularScroll>
+        </MainContainer>
       </MainView>
       <Modalize
         onClosed={handleClosedModal}

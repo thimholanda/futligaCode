@@ -7,7 +7,6 @@ export const Container = styled(RectButton)`
   background: rgba(1, 119, 24, 0.8);
   justify-content: center;
   align-items: center;
-  margin-top: 8px;
 `;
 export const ButtonText = styled.Text`
   font-family: 'Oswald-Regular';

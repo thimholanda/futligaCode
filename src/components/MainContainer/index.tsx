@@ -1,8 +1,12 @@
 import React from 'react';
-import {Container} from './styles';
+import {Container, styles} from './styles';
 
 const MainContainer: React.FC = ({children, ...rest}) => {
-  return <Container {...rest}>{children}</Container>;
+  return (
+    <Container style={styles.container} {...rest}>
+      {children}
+    </Container>
+  );
 };
 
 export default MainContainer;

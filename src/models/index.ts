@@ -4,6 +4,7 @@ export interface AuthContextData {
   loading: boolean;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
+  changeUser(value: any): void;
   token: string;
   urls: Urls;
 }
@@ -107,10 +108,15 @@ export interface Configuracoes {
   feriado: boolean;
   rodada: boolean;
   rodadaFutLiga: boolean;
+  mensagemRodadaFutLiga: string;
 }
 
 export interface PropsCustom {
   data?: any;
+}
+
+export interface MandateInfo {
+  localMandoId: number;
 }
 
 export interface EquipeInfo {
@@ -119,6 +125,7 @@ export interface EquipeInfo {
   distintivo: string;
   bairro: string;
   cidade: string;
+  mandante: MandateInfo;
 }
 
 export interface PainelInfo {
@@ -132,6 +139,14 @@ export interface ScheduleInfo {
   data: string;
   equipe: EquipeInfo;
   painel: PainelInfo;
+}
+
+export interface ScheduleResponse {
+  resultados: ScheduleInfo[];
+  estaComRankingRestrito: boolean;
+  estaNaRodadaFutLiga: boolean;
+  temMaisRegistros: boolean;
+  mensagemErro: string;
 }
 
 export interface ScheduleItemProps {

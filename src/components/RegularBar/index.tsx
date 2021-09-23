@@ -10,9 +10,18 @@ import {Container} from './styles';
 interface Props {
   title: string;
   logout?: boolean;
+  rightAction?: void;
+  changeTimeAction?: void;
+  showChangeTime?: boolean;
 }
 
-export const RegularBar: React.FC<Props> = ({title, logout}) => {
+export const RegularBar: React.FC<Props> = ({
+  title,
+  logout,
+  rightAction,
+  changeTimeAction,
+  showChangeTime,
+}) => {
   const navigation = useNavigation();
   const {signOut} = useAuth();
   const onActionGoBack = () => {
@@ -22,6 +31,14 @@ export const RegularBar: React.FC<Props> = ({title, logout}) => {
       navigation.goBack();
     }
   };
+  const onActionRight = () => {
+    if (rightAction) rightAction();
+  };
+
+  const onActionChangeTime = () => {
+    if (changeTimeAction) changeTimeAction();
+  };
+
   return (
     <>
       <Container>
@@ -76,6 +93,17 @@ export const RegularBar: React.FC<Props> = ({title, logout}) => {
               }}>
               {title}
             </Text>
+            <TouchableOpacity onPress={onActionChangeTime}>
+              <Image
+                style={{
+                  width: 45,
+                  height: 45,
+                  display: showChangeTime ? 'flex' : 'none',
+                }}
+                source={require('../../../src/assets/icons8-troca-de-jogador-100.png')}
+                resizeMode="center"
+              />
+            </TouchableOpacity>
           </View>
 
           <View
@@ -87,7 +115,7 @@ export const RegularBar: React.FC<Props> = ({title, logout}) => {
               justifyContent: 'center',
             }}>
             <TouchableOpacity
-              onPress={() => console.log('aew')}
+              onPress={onActionRight}
               style={{
                 flexDirection: 'row',
                 flexGrow: 1,

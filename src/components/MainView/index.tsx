@@ -1,9 +1,11 @@
 import React from 'react';
-import {Container} from './styles';
+import {Container, styles} from './styles';
 
-const MainView: React.FC = ({children, ...rest}) => {
+const MainView: React.FC = ({children}) => {
   return (
-    <Container forceInset={{bottom: 'never'}} {...rest}>
+    <Container
+      style={styles.container}
+      forceInset={{top: 'never', bottom: 'never'}}>
       {children}
     </Container>
   );

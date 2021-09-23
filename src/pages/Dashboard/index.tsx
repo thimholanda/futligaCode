@@ -44,10 +44,12 @@ import {EquipesService} from '../../services';
 
 import {IScheduleData, ITeamInfo} from '../../models';
 import {TypeGame} from '../../enums';
+import DropDownPicker from "react-native-dropdown-picker";
+import ModalInformation from "../../components/ModalInformation";
 
 const Dashboard: React.FC = () => {
   const navigation = useNavigation();
-  const {loggedUser, urls} = useAuth();
+  const {loggedUser, urls, user, changeUser} = useAuth();
   const carouselRef = useRef<Carousel<IScheduleData>>(
     {} as Carousel<IScheduleData>,
   );
@@ -57,6 +59,10 @@ const Dashboard: React.FC = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [teamInfo, setTeamInfo] = useState<ITeamInfo>({} as ITeamInfo);
   const [scheduleType, setScheduleType] = useState<TypeGame>(TypeGame.EMPTY);
+  const modalTimeRef = useRef<Modalize>(null);
+const [open, setOpen] = useState(false);
+const [value, setValue] = useState('');
+const [items, setItems] = useState([]);
 
   const userName = useMemo(() => {
     return loggedUser.nomeApresentacao.toUpperCase();
@@ -119,7 +125,7 @@ const Dashboard: React.FC = () => {
     if (scheduleType !== '') {
       modalizeRef.current?.close();
     }
-  }, [scheduleType]);
+  }, [loggedUser, scheduleType]);
 
   const since = useMemo(() => {
     if (teamInfo.fundacao) {
@@ -129,10 +135,29 @@ const Dashboard: React.FC = () => {
     }
   }, [teamInfo]);
 
+    const handleModalTime = () => {
+
+        modalTimeRef.current?.open();
+    };
+
+    const handleChangeUser = (value) => {
+        changeUser(user.equipesQueAdministra[value]);
+        modalTimeRef.current?.close();
+    };
+
+    useEffect(() => {
+        console.log(user)
+        setItems(
+            user.equipesQueAdministra.map( (item, key) => {
+                return {label: item.nomeApresentacao, value: key};
+            }),
+        );
+    }, []);
+
   return (
     <>
       <MainView>
-        <RegularBar title={userName} logout={true} />
+        <RegularBar title={userName} logout={true} showChangeTime={user.equipesQueAdministra.length > 1} changeTimeAction={handleModalTime}/>
         <MainContainer>
           <RegularBackground />
           <RegularScroll>
@@ -243,6 +268,18 @@ const Dashboard: React.FC = () => {
                 </ContainerCarousel>
               </FeaturedBox>
             </Row>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('RodadaFutLiga', {});
+              }}>
+              <Text>Go -> Rodada FutLiga</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate('Ranking', {});
+                }}>
+                <Text>Go -> Ranking</Text>
+            </TouchableOpacity>
           </RegularScroll>
         </MainContainer>
       </MainView>
@@ -276,7 +313,7 @@ const Dashboard: React.FC = () => {
             }}>
             <View>
               <TouchableOpacity
-                onPress={() => handleScheduleGameType(TypeGame.MANDANTE)}
+                onPress={() => handleScheduleGameType(TypeGame.CLIENT)}
                 style={{
                   width: 60,
                   height: 60,
@@ -295,12 +332,12 @@ const Dashboard: React.FC = () => {
                   textAlign: 'center',
                   fontSize: 14,
                 }}>
-                {TypeGame.MANDANTE}
+                {TypeGame.CLIENT}
               </Text>
             </View>
             <View>
               <TouchableOpacity
-                onPress={() => handleScheduleGameType(TypeGame.VISITANTE)}
+                onPress={() => handleScheduleGameType(TypeGame.VISITANT)}
                 style={{
                   width: 60,
                   height: 60,
@@ -319,7 +356,7 @@ const Dashboard: React.FC = () => {
                   textAlign: 'center',
                   fontSize: 14,
                 }}>
-                {TypeGame.VISITANTE}
+                {TypeGame.VISITANT}
               </Text>
             </View>
           </Row>
@@ -347,6 +384,21 @@ const Dashboard: React.FC = () => {
           </TouchableOpacity>
         </View>
       </Modalize>
+        <ModalInformation modalizeRef={modalTimeRef} title="TIME">
+            <View style={{marginTop: 200, marginBottom: 200}}>
+                <DropDownPicker
+                    style={{alignContent: 'center'}}
+                    open={open}
+                    value={value}
+                    items={items}
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    onChangeValue={value => {
+                        handleChangeUser(value);
+                    }}
+                />
+            </View>
+        </ModalInformation>
     </>
   );
 };
