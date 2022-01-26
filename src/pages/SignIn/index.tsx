@@ -10,7 +10,6 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 import {Form} from '@unform/mobile';
 import * as Yup from 'yup';
@@ -27,6 +26,7 @@ import {
   CreateAccountButton,
   CreateAccountButtonText,
   ContainerCreateAccountButton,
+  CreateAccountButtonIcon,
 } from './styles';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -198,7 +198,7 @@ const SignIn: React.FC = () => {
           onPress={() => {
             navigation.navigate('SignUp');
           }}>
-          <Icon name="log-in" size={20} color="white" />
+          {/*<CreateAccountButtonIcon source={} size={20} color="white" />*/}
           <CreateAccountButtonText>Criar uma conta</CreateAccountButtonText>
         </CreateAccountButton>
       </ContainerCreateAccountButton>

@@ -62,7 +62,7 @@ export interface Headers {
 }
 
 export interface IScheduleData {
-  dataJogo: string;
+  dataJogo: String;
   ano: String;
   dia: String;
   mes: String;

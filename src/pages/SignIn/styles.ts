@@ -58,6 +58,8 @@ export const CreateAccountButton = styled.TouchableOpacity`
   flex-direction: row;
 `;
 
+export const CreateAccountButtonIcon = styled.Image``;
+
 export const CreateAccountButtonText = styled.Text`
   font-family: 'Oswald-Regular';
   font-size: 16px;

@@ -3,6 +3,8 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Container} from './styles';
 
 import imgTime from '../../assets/icons8-time-24.png';
+import imgBola from '../../assets/icon-bola-24.png';
+import imgInfo from '../../assets/icon-info-24.png';
 import imgHourglass from '../../assets/icons8-hourglass-24.png';
 import imgRoad from '../../assets/icons8-road-30.png';
 import imgRisk from '../../assets/icons8-high-risk-16.png';
@@ -46,17 +48,6 @@ const ScheduleItem: React.FC<Props> = ({
       scheduleInfo.equipe.distintivo = '0-4.gif';
     return `${urls.distintivos}${scheduleInfo.equipe.distintivo}`;
   }, [scheduleInfo, urls]);
-
-  const importantInformationHandle = useCallback(async () => {
-    openInformation({
-      type: 1,
-      title: 'Informação importante',
-      data: [
-        'Alerta de Feriado\n\nFeriado prolongado de 04/09/2021 a 07/09/2021 - Independência do Brasil\nComo você está tentando marcar jogo para uma data de feriado, certifique-se de você terá número de jogadores suficientes para o jogo. Não deixe para cancelar o jogo na última hora. Além de evitar multas para sua equipe, você contribui para que a equipe adversária procure adversários disponíveis para esta data. Caso seja de seu interesse, bloqueie a data ou a semana em que sua equipe não está disponível.',
-        'Restrição de acesso\n\nAtenção, a equipe Interage está com acesso restrito à resposta de convites.\nSe você prosseguir, existe uma grande possibilidade deste convite não ser respondido a tempo, ou mesmo ser cancelado por inatividade de 7 dias.',
-      ],
-    });
-  }, []);
 
   const detailedInformationHandle = useCallback(async () => {
     openInformation({
@@ -139,12 +130,18 @@ const ScheduleItem: React.FC<Props> = ({
   }, []);
 
   const handleInvite = useCallback(async () => {
-    navigation.navigate('InviteGame', {
-      params: {
-        scheduleInfo,
-      },
+    // navigation.navigate('InviteGame', {
+    //   params: {
+    //     scheduleInfo,
+    //   },
+    // });
+
+    openInformation({
+      type: 6,
+      title: 'AGENDAMENTO',
+      data: {scheduleInfo},
     });
-  }, []);
+  }, [scheduleInfo]);
 
   useEffect(() => {
     locaisMandoByCodeFetch(scheduleInfo.equipe.mandante?.localMandoId);
@@ -155,152 +152,65 @@ const ScheduleItem: React.FC<Props> = ({
   }, [locaisMando]);
 
   return (
-    <Container style={{backgroundColor: 'white'}}>
+    <Container
+      style={{
+        backgroundColor: 'white',
+      }}>
       <TouchableOpacity
-        onPress={handleSelected}
+        onPress={handleInvite}
         style={{
           paddingHorizontal: 20,
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
           borderBottomColor: '#ccc',
+          flexDirection: 'row',
           borderBottomWidth: 1,
+          padding: 10,
         }}>
-        <TouchableOpacity
-          style={{flex: 1, width: 150, height: 100}}
-          onPress={handleSelected}>
-          <AdjustableImage size="100%" isUri={true} image={avatar} />
-        </TouchableOpacity>
         <View
           style={{
-            flex: 2,
+            width: 100,
+            height: 100,
           }}>
-          <View style={{paddingTop: 5}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                alignContent: 'flex-start',
-                justifyContent: 'space-between',
-              }}>
-              <TouchableOpacity onPress={handleSelected}>
-                <Text style={{fontSize: 15, maxWidth: 150}}>
-                  {scheduleInfo.equipe.nomeApresentacao}
-                </Text>
-                <Text style={{fontSize: 11}}>
-                  {locaisMandoInfo.nomeCompleto}
-                </Text>
-                <Text style={{fontSize: 11, maxWidth: 150}}>
-                  {locaisMandoInfo.bairro}/{locaisMandoInfo.cidade}
-                </Text>
-              </TouchableOpacity>
-              <View>
-                <TouchableOpacity
-                  onPress={handleTimeSchedule}
-                  style={{
-                    marginBottom: 5,
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    alignItems: 'flex-start',
-                    alignContent: 'flex-start',
-                  }}>
-                  <Image
-                    source={imgTime}
-                    style={{marginRight: 5, width: 16, height: 16}}></Image>
-                  <Text style={{fontSize: 11}}>{timeSchedule}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handleLastAccess}
-                  style={{
-                    marginBottom: 5,
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    alignItems: 'flex-start',
-                    alignContent: 'flex-start',
-                  }}>
-                  <Image
-                    source={imgHourglass}
-                    style={{marginRight: 5, width: 16, height: 16}}></Image>
-                  <Text style={{fontSize: 11}}>
-                    {scheduleInfo.painel.diasUltimoAcesso}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handleDistance}
-                  style={{
-                    marginBottom: 5,
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    alignItems: 'flex-start',
-                    alignContent: 'flex-start',
-                  }}>
-                  <Image
-                    source={imgRoad}
-                    style={{marginRight: 5, width: 16, height: 16}}></Image>
-                  <Text style={{fontSize: 11}}>
-                    {scheduleInfo.painel.distancia}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-          <View
+          <AdjustableImage size="100%" isUri={true} image={avatar} />
+        </View>
+        <View
+          style={{
+            width: 150,
+            height: 50,
+          }}>
+          <Text
             style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              alignContent: 'flex-start',
-              justifyContent: 'space-around',
-              marginTop: 10,
-              marginBottom: 10,
+              color: '#555B5B',
+              fontSize: 13,
+              textTransform: 'uppercase',
+              fontFamily: 'Oswald-Bold',
             }}>
-            <TouchableOpacity onPress={importantInformationHandle}>
-              <Image
-                source={imgRisk}
-                style={{width: 16, height: 16, marginRight: 5}}></Image>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={detailedInformationHandle}>
-              <Image
-                source={imgMarker}
-                style={{width: 16, height: 16, marginRight: 5}}></Image>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={evaluationHandle}
-              style={{
-                flexDirection: 'row',
-              }}>
-              <Image
-                source={imgStar}
-                style={{width: 16, height: 16, marginRight: 1}}></Image>
-              <Image
-                source={imgStar}
-                style={{width: 16, height: 16, marginRight: 1}}></Image>
-              <Image
-                source={imgStar}
-                style={{width: 16, height: 16, marginRight: 1}}></Image>
-              <Image
-                source={imgStar}
-                style={{width: 16, height: 16, marginRight: 1}}></Image>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                alignItems: 'flex-start',
-                alignContent: 'flex-start',
-                marginRight: 5,
-              }}>
-              <Image
-                source={imgTrophy}
-                style={{width: 16, height: 16, marginRight: 5}}></Image>
-              <Text style={{fontSize: 11}}>
-                {scheduleInfo.painel.rankingAtualAdversario}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleInvite}>
-              <Image source={imgSend} style={{width: 16, height: 16}}></Image>
-            </TouchableOpacity>
-          </View>
+            {scheduleInfo.equipe.nome}
+          </Text>
+          <Text
+            style={{
+              color: '#7A7A79',
+              fontSize: 13,
+              textTransform: 'uppercase',
+              fontFamily: 'Oswald-Regular',
+            }}>
+            {scheduleInfo.equipe.nomeApresentacao}
+          </Text>
+          <Text
+            style={{
+              marginTop: 20,
+              fontSize: 10,
+              color: '#859091',
+              textTransform: 'uppercase',
+              fontFamily: 'Oswald-Light',
+            }}>
+            {scheduleInfo.equipe.bairro}/{scheduleInfo.equipe.cidade}
+          </Text>
+        </View>
+        <View style={{}}>
+          <Image
+            source={imgBola}
+            style={{marginRight: 5, width: 50, height: 50}}></Image>
+          <Image source={imgInfo} style={{width: 59, height: 28}}></Image>
         </View>
       </TouchableOpacity>
     </Container>

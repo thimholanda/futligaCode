@@ -19,6 +19,8 @@ interface Props extends IContainerProps, IContainerButtonProps, ViewProps {
   title: string;
   children?: React.ReactNode;
   onPress?(): void;
+  isTitleCenter?: boolean;
+  borderRadius?: number;
 }
 
 export function FeaturedBox({
@@ -27,6 +29,7 @@ export function FeaturedBox({
   title,
   isHalf,
   children,
+  isTitleCenter,
   ...rest
 }: Props) {
   return (
@@ -35,7 +38,11 @@ export function FeaturedBox({
         <ButtonBackground source={imgBg} />
         <TextContainer>
           <TextBackground source={imgBgText} />
-          <Title>{title}</Title>
+          {isTitleCenter ? (
+            <Title style={{marginLeft: 110}}>{title}</Title>
+          ) : (
+            <Title>{title}</Title>
+          )}
         </TextContainer>
         <Content>{children}</Content>
       </ContainerButton>

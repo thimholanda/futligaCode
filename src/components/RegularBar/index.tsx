@@ -114,20 +114,22 @@ export const RegularBar: React.FC<Props> = ({
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <TouchableOpacity
-              onPress={onActionRight}
-              style={{
-                flexDirection: 'row',
-                flexGrow: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Image
-                style={{width: '100%', height: 26}}
-                source={require('../../../src/assets/sino.png')}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
+            {rightAction && (
+              <TouchableOpacity
+                onPress={onActionRight}
+                style={{
+                  flexDirection: 'row',
+                  flexGrow: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  style={{width: '100%', height: 26}}
+                  source={require('../../../src/assets/sino.png')}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </Container>

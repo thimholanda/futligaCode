@@ -1,25 +1,17 @@
-/* eslint-disable react-native/no-inline-styles */
-import 'react-native-gesture-handler';
 import React from 'react';
-import {View, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
+import 'react-native-gesture-handler';
 
 import AppProvider from './hooks';
-
 import Routes from './routes';
 
-const App: React.FC = () => (
+import {LogBox} from 'react-native';
+LogBox.ignoreAllLogs();
+
+const App = () => (
   <NavigationContainer>
-    <StatusBar
-      hidden
-      barStyle="light-content"
-      backgroundColor="#312e38"
-      translucent
-    />
     <AppProvider>
-      <View style={{flex: 1, backgroundColor: '#312e38'}}>
-        <Routes />
-      </View>
+      <Routes />
     </AppProvider>
   </NavigationContainer>
 );

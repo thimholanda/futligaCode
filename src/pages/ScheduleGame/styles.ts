@@ -10,4 +10,7 @@ export const styles = StyleSheet.create({
   rodadaContent: {
     alignItems: 'center',
   },
+  listagemJogos: {
+    height: 400,
+  },
 });

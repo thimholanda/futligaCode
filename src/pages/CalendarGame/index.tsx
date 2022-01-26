@@ -11,6 +11,8 @@ import {RegularBar} from '../../components/RegularBar';
 import localePtBr from '../../utils/calendar/locales/localePtBr';
 import {useAuth} from '../../hooks/auth';
 
+import {environment} from '../../environment';
+
 import {
   Calendario,
   CalendarioResponse,
@@ -130,6 +132,9 @@ const CalendarGame: React.FC<ParamRoute> = paramRoute => {
         dateSelected.selected = true;
         dateSelected.selectedColor = '#d9534f';
         dateSelected.dotColor = '#d9534f';
+        //eliminar
+        dateSelected.disabled = false;
+        dateSelected.disableTouchEvent = false;
       }
 
       //Feriado
@@ -147,7 +152,9 @@ const CalendarGame: React.FC<ParamRoute> = paramRoute => {
   }, []);
 
   useEffect(() => {
+    console.log('inciando');
     getScheduleCalendarList().then((listDates: any) => {
+      console.log('listDates', listDates);
       marketDates(listDates).then(dates => {
         setCalendarDates(dates);
       });
